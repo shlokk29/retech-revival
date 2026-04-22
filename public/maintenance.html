@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Maintenance Request</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Maintenance Request</h2>
+
+<input type="text" id="issue" placeholder="Enter your issue">
+<br><br>
+<button onclick="submitRequest()">Submit</button>
+
+<script>
+function submitRequest() {
+  let issue = document.getElementById("issue").value;
+  alert("Maintenance request submitted: " + issue);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details – Retech Revival</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; padding: 3rem 0; }
+    .product-img-box {
+      background: linear-gradient(135deg, rgba(108,99,255,0.1), rgba(34,211,238,0.07));
+      border: 1px solid var(--border); border-radius: var(--radius);
+      height: 360px; display: flex; align-items: center; justify-content: center; font-size: 9rem;
+    }
+    .product-details h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .product-meta { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .price-section { margin: 1.5rem 0; }
+    .price-section .original { font-size: 1rem; color: var(--text3); text-decoration: line-through; }
+    .price-section .current { font-size: 2.2rem; font-weight: 900; color: var(--primary); }
+    .price-section .savings { font-size: 0.9rem; color: var(--green); font-weight: 600; }
+    .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 1.5rem 0; }
+    .spec-item { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.75rem; }
+    .spec-item .spec-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text2); font-weight: 600; }
+    .spec-item .spec-val { font-size: 0.92rem; font-weight: 700; margin-top: 0.2rem; }
+    .action-btns { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .warranty-banner { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); border-radius: var(--radius-sm); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; margin-top: 1.25rem; }
+    @media (max-width: 800px) { .product-layout { grid-template-columns: 1fr; } .specs-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-logo"><div class="logo-icon">♻️</div><span>Retech Revival</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a><a href="/catalog.html" class="active">Buy</a>
+      <a href="/sell.html">Sell</a><a href="/about.html">About</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/cart.html" class="cart-btn">🛒 Cart<span class="cart-count" id="cart-count-badge">0</span></a>
+      <a href="/login.html" class="btn-outline" id="nav-login-btn">Login</a>
+      <a href="/signup.html" class="btn-primary" id="nav-signup-btn">Sign Up</a>
+      <div id="nav-user-menu" class="hidden" style="display:flex;align-items:center;gap:0.5rem">
+        <span style="font-size:0.9rem;color:var(--text2)">Hi, <strong id="nav-user-name"></strong></span>
+        <button onclick="logout()" class="btn-outline" style="padding:0.4rem 0.8rem;font-size:0.85rem">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="container">
+      <div style="padding:1.5rem 0 0">
+        <a href="/catalog.html" style="color:var(--text2);font-size:0.88rem">← Back to Catalog</a>
+      </div>
+      <div class="product-layout" id="product-content">
+        <div class="spinner" style="grid-column:1/-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer><div class="container"><div class="footer-bottom"><span>© 2025 Retech Revival.</span></div></div></footer>
+  <div id="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+
+    async function loadProduct() {
+      const container = document.getElementById('product-content');
+      if (!id) { container.innerHTML = '<p class="text-muted" style="grid-column:1/-1">Product not found.</p>'; return; }
+      try {
+        const r = await fetch('/api/products/' + id);
+        const data = await r.json();
+        if (!data.success || !data.data) { container.innerHTML = '<p class="text-muted" style="grid-column:1/-1">Product not found.</p>'; return; }
+        const p = data.data;
+        document.title = p.name + ' – Retech Revival';
+        const discount = Math.round((1 - p.price / p.originalPrice) * 100);
+        container.innerHTML = `
+          <div class="product-img-box">💻</div>
+          <div class="product-details">
+            <div class="product-meta">
+              <span class="badge ${conditionBadgeClass(p.condition)}">${p.condition}</span>
+              <span class="badge badge-blue">${p.warranty} Warranty</span>
+              ${p.inStock ? '<span class="badge badge-green">✓ In Stock</span>' : '<span class="badge badge-red">Out of Stock</span>'}
+            </div>
+            <h1>${p.name}</h1>
+            <div class="stars">${renderStars(p.rating)} <span style="color:var(--text2);font-size:0.85rem">${p.rating} (${p.reviews} reviews)</span></div>
+            <div class="price-section">
+              <div class="original">${formatPrice(p.originalPrice)} MRP</div>
+              <div class="current">${formatPrice(p.price)}</div>
+              <div class="savings">You save ${formatPrice(p.originalPrice - p.price)} (${discount}% off)</div>
+            </div>
+            <p style="color:var(--text2);font-size:0.92rem;line-height:1.7">${p.description || ''}</p>
+            <div class="specs-grid">
+              <div class="spec-item"><div class="spec-label">Processor</div><div class="spec-val">${p.processor || '—'}</div></div>
+              <div class="spec-item"><div class="spec-label">RAM</div><div class="spec-val">${p.ram || '—'}</div></div>
+              <div class="spec-item"><div class="spec-label">Storage</div><div class="spec-val">${p.storage || '—'}</div></div>
+              <div class="spec-item"><div class="spec-label">Display</div><div class="spec-val">${p.display || '—'}</div></div>
+              <div class="spec-item"><div class="spec-label">Battery</div><div class="spec-val">${p.battery || '—'}</div></div>
+              <div class="spec-item"><div class="spec-label">Brand</div><div class="spec-val">${p.brand}</div></div>
+            </div>
+            <div class="action-btns">
+              <button class="btn btn-violet btn-lg" onclick="addToCart('${p._id}','${p.name}',${p.price},'${p.brand}','${p.condition}')">🛒 Add to Cart</button>
+              <a href="/cart.html" class="btn btn-ghost btn-lg">View Cart</a>
+            </div>
+            <div class="warranty-banner">
+              <span style="font-size:1.5rem">🛡️</span>
+              <div><strong>${p.warranty} Warranty</strong><br><span style="font-size:0.82rem;color:var(--text2)">All devices pass our 40-point quality inspection before listing</span></div>
+            </div>
+          </div>
+        `;
+      } catch { container.innerHTML = '<p class="text-muted" style="grid-column:1/-1">Failed to load product.</p>'; }
+    }
+    loadProduct();
+  </script>
+</body>
+</html>

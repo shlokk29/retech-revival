@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart – Retech Revival</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .cart-layout { display: grid; grid-template-columns: 1fr 360px; gap: 2rem; padding: 2.5rem 0; }
+    .cart-item {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem; display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1rem;
+      transition: all 0.2s;
+    }
+    .cart-item:hover { border-color: rgba(108,99,255,0.25); }
+    .cart-item-icon { width: 80px; height: 80px; background: linear-gradient(135deg,rgba(108,99,255,0.12),rgba(34,211,238,0.07)); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; flex-shrink: 0; }
+    .cart-item-info { flex: 1; }
+    .cart-item-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .cart-item-info p { font-size: 0.82rem; color: var(--text2); margin-bottom: 0.5rem; }
+    .cart-item-price { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
+    .qty-ctrl { display: flex; align-items: center; gap: 0.5rem; }
+    .qty-btn { width: 30px; height: 30px; border-radius: 8px; background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .qty-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .qty-val { font-weight: 700; min-width: 20px; text-align: center; }
+    .remove-btn { background: none; border: none; color: var(--text3); font-size: 0.82rem; cursor: pointer; padding: 0.2rem 0.5rem; border-radius: 6px; transition: all 0.2s; }
+    .remove-btn:hover { color: var(--red); background: rgba(244,63,94,0.1); }
+    /* Summary */
+    .summary-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; position: sticky; top: 88px; height: fit-content; }
+    .summary-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 0.5rem 0; }
+    .summary-total { font-size: 1.2rem; font-weight: 800; padding-top: 0.75rem; margin-top: 0.5rem; border-top: 1px solid var(--border); }
+    .empty-cart { text-align: center; padding: 5rem 0; }
+    .empty-cart .icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.4; }
+    /* Checkout modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+    .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+    .modal h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 1.25rem; }
+    @media (max-width: 800px) { .cart-layout { grid-template-columns: 1fr; } .summary-card { position: static; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-logo"><div class="logo-icon">♻️</div><span>Retech Revival</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a><a href="/catalog.html">Buy</a>
+      <a href="/sell.html">Sell</a><a href="/about.html">About</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/cart.html" class="cart-btn active">🛒 Cart<span class="cart-count" id="cart-count-badge">0</span></a>
+      <a href="/login.html" class="btn-outline" id="nav-login-btn">Login</a>
+      <a href="/signup.html" class="btn-primary" id="nav-signup-btn">Sign Up</a>
+      <div id="nav-user-menu" class="hidden" style="display:flex;align-items:center;gap:0.5rem">
+        <span style="font-size:0.9rem;color:var(--text2)">Hi, <strong id="nav-user-name"></strong></span>
+        <button onclick="logout()" class="btn-outline" style="padding:0.4rem 0.8rem;font-size:0.85rem">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="page-header">
+      <div class="container">
+        <h1>🛒 Your Cart</h1>
+        <p>Review your items before checkout</p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="cart-layout">
+        <div id="cart-items-container"><div class="spinner"></div></div>
+        <div>
+          <div class="summary-card" id="summary-card">
+            <h3>Order Summary</h3>
+            <div id="summary-rows"></div>
+            <button class="btn btn-violet w-full mt-3" id="checkout-btn" onclick="openCheckout()" style="display:none">Proceed to Checkout</button>
+            <a href="/catalog.html" class="btn btn-ghost w-full mt-2">Continue Shopping</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-overlay hidden" id="checkout-modal">
+    <div class="modal">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h2>📦 Checkout</h2>
+        <button onclick="closeCheckout()" style="background:none;border:none;color:var(--text2);font-size:1.3rem;cursor:pointer">✕</button>
+      </div>
+      <div class="form-group mb-2">
+        <label>Full Name *</label>
+        <input type="text" class="form-control" id="co-name" placeholder="Your full name" />
+      </div>
+      <div class="form-group mb-2">
+        <label>Phone *</label>
+        <input type="tel" class="form-control" id="co-phone" placeholder="10-digit mobile number" />
+      </div>
+      <div class="form-group mb-2">
+        <label>Email</label>
+        <input type="email" class="form-control" id="co-email" placeholder="your@email.com" />
+      </div>
+      <div class="form-group mb-2">
+        <label>Delivery Address *</label>
+        <textarea class="form-control" id="co-address" rows="3" placeholder="Full address with pincode"></textarea>
+      </div>
+      <div class="form-group mb-3">
+        <label>Payment Method</label>
+        <select class="form-control" id="co-payment">
+          <option value="upi">UPI / QR Code</option>
+          <option value="cod">Cash on Delivery</option>
+          <option value="card">Credit / Debit Card</option>
+          <option value="netbanking">Net Banking</option>
+          <option value="emi">EMI</option>
+        </select>
+      </div>
+      <div id="order-total-display" style="background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.2);border-radius:var(--radius-sm);padding:0.9rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:700">Order Total</span>
+        <span class="text-primary fw-800" id="modal-total" style="font-size:1.15rem"></span>
+      </div>
+      <button class="btn btn-green w-full" onclick="placeOrder()">✅ Place Order</button>
+    </div>
+  </div>
+
+  <!-- ORDER SUCCESS MODAL -->
+  <div class="modal-overlay hidden" id="success-modal">
+    <div class="modal" style="text-align:center">
+      <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+      <h2>Order Placed!</h2>
+      <p style="color:var(--text2);margin:0.75rem 0 1.5rem">Your order has been confirmed. You'll receive it within 3 business days.</p>
+      <div id="order-success-details" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:var(--radius-sm);padding:1.25rem;margin-bottom:1.5rem;text-align:left"></div>
+      <a href="/catalog.html" class="btn btn-violet w-full">Shop More</a>
+    </div>
+  </div>
+
+  <footer><div class="container"><div class="footer-bottom"><span>© 2025 Retech Revival.</span></div></div></footer>
+  <div id="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script>
+    async function loadCart() {
+      const container = document.getElementById('cart-items-container');
+      const summaryRows = document.getElementById('summary-rows');
+      try {
+        const r = await fetch('/api/cart');
+        const data = await r.json();
+        const { items, total, count } = data.data;
+        document.getElementById('cart-count-badge').textContent = count;
+        if (!items || items.length === 0) {
+          container.innerHTML = `<div class="empty-cart"><div class="icon">🛒</div><h3>Your cart is empty</h3><p class="text-muted">Add some refurbished laptops to get started!</p><a href="/catalog.html" class="btn btn-violet mt-3">Browse Devices</a></div>`;
+          summaryRows.innerHTML = '<p class="text-muted" style="text-align:center;font-size:0.85rem">Add items to see summary</p>';
+          return;
+        }
+        container.innerHTML = items.map(item => `
+          <div class="cart-item" id="item-${item.productId}">
+            <div class="cart-item-icon">💻</div>
+            <div class="cart-item-info">
+              <h4>${item.name}</h4>
+              <p>${item.brand} · <span class="badge ${conditionBadgeClass(item.condition)}" style="font-size:0.7rem">${item.condition}</span></p>
+              <div class="cart-item-price">${formatPrice(item.price)}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.75rem">
+              <div class="qty-ctrl">
+                <button class="qty-btn" onclick="updateQty('${item.productId}', ${item.quantity - 1})">−</button>
+                <span class="qty-val">${item.quantity}</span>
+                <button class="qty-btn" onclick="updateQty('${item.productId}', ${item.quantity + 1})">+</button>
+              </div>
+              <div style="font-weight:700">${formatPrice(item.price * item.quantity)}</div>
+              <button class="remove-btn" onclick="removeItem('${item.productId}')">🗑 Remove</button>
+            </div>
+          </div>
+        `).join('');
+        const shipping = total > 30000 ? 0 : 499;
+        summaryRows.innerHTML = `
+          <div class="summary-row"><span>Subtotal (${count} item${count !== 1 ? 's' : ''})</span><span>${formatPrice(total)}</span></div>
+          <div class="summary-row"><span>Shipping</span><span class="${shipping === 0 ? 'text-green' : ''}">${shipping === 0 ? 'FREE' : formatPrice(shipping)}</span></div>
+          <div class="summary-row"><span>GST (5%)</span><span>${formatPrice(Math.round(total * 0.05))}</span></div>
+          <div class="summary-row summary-total"><span>Total</span><span class="text-primary">${formatPrice(total + shipping + Math.round(total * 0.05))}</span></div>
+          ${total < 30000 ? '<p style="font-size:0.75rem;color:var(--green);margin-top:0.5rem">Add ₹' + formatPrice(30000 - total) + ' more for free shipping!</p>' : '<p style="font-size:0.75rem;color:var(--green);margin-top:0.5rem">✓ You qualify for free shipping!</p>'}
+        `;
+        document.getElementById('checkout-btn').style.display = 'flex';
+        document.getElementById('modal-total').textContent = formatPrice(total + shipping + Math.round(total * 0.05));
+      } catch {
+        container.innerHTML = '<p class="text-muted">Failed to load cart.</p>';
+      }
+    }
+
+    async function updateQty(productId, qty) {
+      await fetch('/api/cart/update', {
+        method: 'PUT', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ productId, quantity: qty })
+      });
+      loadCart();
+    }
+
+    async function removeItem(productId) {
+      await fetch('/api/cart/remove/' + productId, { method: 'DELETE' });
+      showToast('Item removed from cart', 'info');
+      loadCart();
+    }
+
+    function openCheckout() { document.getElementById('checkout-modal').classList.remove('hidden'); }
+    function closeCheckout() { document.getElementById('checkout-modal').classList.add('hidden'); }
+
+    async function placeOrder() {
+      const name = document.getElementById('co-name').value;
+      const phone = document.getElementById('co-phone').value;
+      const address = document.getElementById('co-address').value;
+      if (!name || !phone || !address) { showToast('Please fill all required fields', 'error'); return; }
+      try {
+        const r = await fetch('/api/cart/checkout', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ name, phone, email: document.getElementById('co-email').value, address, payment: document.getElementById('co-payment').value })
+        });
+        const data = await r.json();
+        if (!data.success) { showToast(data.message, 'error'); return; }
+        closeCheckout();
+        document.getElementById('order-success-details').innerHTML = `
+          <div class="summary-row"><span>Order ID</span><strong>${data.data.orderId}</strong></div>
+          <div class="summary-row"><span>Items</span><strong>${data.data.items} device(s)</strong></div>
+          <div class="summary-row"><span>Total Paid</span><strong class="text-primary">${formatPrice(data.data.total)}</strong></div>
+          <div class="summary-row"><span>Estimated Delivery</span><strong>${data.data.deliveryDate}</strong></div>
+        `;
+        document.getElementById('success-modal').classList.remove('hidden');
+        loadCart();
+      } catch { showToast('Failed to place order. Try again.', 'error'); }
+    }
+
+    loadCart();
+  </script>
+</body>
+</html>

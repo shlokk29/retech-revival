@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account – Retech Revival</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(34,211,238,0.2) 0%, transparent 70%), var(--bg); }
+    .auth-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 460px; box-shadow: var(--shadow); }
+    .auth-logo { text-align: center; margin-bottom: 2rem; }
+    .auth-logo .logo-icon { width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg,var(--accent),var(--green)); display: inline-flex; align-items: center; justify-content: center; font-size: 1.7rem; margin-bottom: 0.75rem; }
+    .error-msg { color: var(--red); font-size: 0.82rem; margin-top: 0.75rem; display: none; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-icon">♻️</div>
+        <h1 style="font-size:1.5rem;font-weight:800">Create Account</h1>
+        <p style="color:var(--text2);font-size:0.88rem">Join Retech Revival — save big on tech</p>
+      </div>
+      <form onsubmit="handleSignup(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label style="font-size:0.82rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.03em">First Name *</label>
+            <input type="text" class="form-control" id="su-name" placeholder="Aarav" required />
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.82rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.03em">Phone</label>
+            <input type="tel" class="form-control" id="su-phone" placeholder="9876543210" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label style="font-size:0.82rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.03em">Email Address *</label>
+          <input type="email" class="form-control" id="su-email" placeholder="you@email.com" required />
+        </div>
+        <div class="form-group">
+          <label style="font-size:0.82rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.03em">Password *</label>
+          <input type="password" class="form-control" id="su-password" placeholder="Min. 6 characters" minlength="6" required />
+        </div>
+        <div class="error-msg" id="su-error"></div>
+        <button type="submit" class="btn btn-cyan w-full mt-3" id="su-btn" style="justify-content:center">Create Account →</button>
+      </form>
+      <p style="text-align:center;font-size:0.78rem;color:var(--text3);margin-top:1rem">By creating an account you agree to our <a href="#" style="color:var(--primary)">Terms of Service</a>.</p>
+      <hr class="divider" style="margin:1.25rem 0" />
+      <p style="text-align:center;font-size:0.88rem;color:var(--text2)">Already have an account? <a href="/login.html" style="color:var(--primary);font-weight:600">Login</a></p>
+    </div>
+  </div>
+  <div id="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script>
+    async function handleSignup(e) {
+      e.preventDefault();
+      const btn = document.getElementById('su-btn');
+      btn.textContent = 'Creating account...'; btn.disabled = true;
+      const errEl = document.getElementById('su-error');
+      errEl.style.display = 'none';
+      try {
+        const r = await fetch('/api/auth/signup', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({
+            name: document.getElementById('su-name').value,
+            email: document.getElementById('su-email').value,
+            password: document.getElementById('su-password').value,
+            phone: document.getElementById('su-phone').value
+          })
+        });
+        const data = await r.json();
+        if (data.success) { showToast('Account created! Welcome 🎉','success'); setTimeout(() => location.href = '/', 900); }
+        else { errEl.textContent = data.message; errEl.style.display = 'block'; btn.textContent = 'Create Account →'; btn.disabled = false; }
+      } catch { errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block'; btn.textContent = 'Create Account →'; btn.disabled = false; }
+    }
+  </script>
+</body>
+</html>

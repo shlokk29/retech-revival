@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us – Retech Revival</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .about-hero { background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(108,99,255,0.3) 0%, transparent 70%), var(--bg); padding: 5rem 0 3rem; text-align: center; }
+    .about-hero h1 { font-size: 2.8rem; font-weight: 900; margin-bottom: 1rem; }
+    .about-hero p { font-size: 1.1rem; color: var(--text2); max-width: 600px; margin: 0 auto 2rem; line-height: 1.7; }
+    .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; padding: 3rem 0; }
+    .stat-card { text-align: center; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; }
+    .stat-card .num { font-size: 2.2rem; font-weight: 900; }
+    .stat-card p { color: var(--text2); font-size: 0.9rem; margin: 0.25rem 0 0; }
+    .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .mission-text h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+    .mission-text p { color: var(--text2); line-height: 1.8; margin-bottom: 1rem; }
+    .mission-visual { background: linear-gradient(135deg, rgba(108,99,255,0.12), rgba(34,211,238,0.08)); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem; }
+    .value-item { display: flex; gap: 1rem; margin-bottom: 1.25rem; }
+    .value-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .value-item h4 { font-weight: 700; margin-bottom: 0.2rem; }
+    .value-item p { font-size: 0.88rem; color: var(--text2); margin: 0; }
+    .team-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
+    .team-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; transition: all 0.3s; }
+    .team-card:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-4px); }
+    .team-avatar { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; }
+    .team-card h3 { font-size: 1rem; font-weight: 700; }
+    .team-card p { font-size: 0.85rem; color: var(--text2); margin: 0.3rem 0 0; }
+    @media (max-width: 800px) { .stats-row { grid-template-columns: 1fr 1fr; } .mission-grid { grid-template-columns: 1fr; } .team-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-logo"><div class="logo-icon">♻️</div><span>Retech Revival</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a><a href="/catalog.html">Buy</a>
+      <a href="/sell.html">Sell</a><a href="/about.html" class="active">About</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/cart.html" class="cart-btn">🛒 Cart<span class="cart-count" id="cart-count-badge">0</span></a>
+      <a href="/login.html" class="btn-outline" id="nav-login-btn">Login</a>
+      <a href="/signup.html" class="btn-primary" id="nav-signup-btn">Sign Up</a>
+      <div id="nav-user-menu" class="hidden" style="display:flex;align-items:center;gap:0.5rem">
+        <span style="font-size:0.9rem;color:var(--text2)">Hi, <strong id="nav-user-name"></strong></span>
+        <button onclick="logout()" class="btn-outline" style="padding:0.4rem 0.8rem;font-size:0.85rem">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="about-hero">
+      <div class="container">
+        <div class="hero-tag" style="display:inline-flex;margin-bottom:1.5rem">🌱 Our Story</div>
+        <h1>Affordable Tech.<br><span style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Sustainable Future.</span></h1>
+        <p>Retech Revival was born from a simple idea: premium technology shouldn't be a luxury. We bridge the gap between high-quality refurbished devices and students, startups, and professionals who need them.</p>
+        <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
+          <a href="/catalog.html" class="btn btn-violet btn-lg">Shop Now</a>
+          <a href="/sell.html" class="btn btn-ghost btn-lg">Sell Your Laptop</a>
+        </div>
+      </div>
+    </div>
+
+    <section class="section-sm" style="background:var(--bg2)">
+      <div class="container">
+        <div class="stats-row">
+          <div class="stat-card"><div class="num text-primary">2,400+</div><p>Devices Sold</p></div>
+          <div class="stat-card"><div class="num text-accent">98%</div><p>Customer Satisfaction</p></div>
+          <div class="stat-card"><div class="num text-green">1,200+</div><p>Devices Revived</p></div>
+          <div class="stat-card"><div class="num" style="color:var(--orange)">50+</div><p>Cities Served</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="mission-grid">
+          <div class="mission-text">
+            <h2>Why We <span class="text-primary">Started</span></h2>
+            <p>As college students ourselves, we saw the problem first-hand: new laptops cost a semester's worth of fees, yet millions of perfectly functional devices sat unused, rapidly losing value in people's homes.</p>
+            <p>We created Retech Revival to solve both problems simultaneously — giving buyers access to affordable, certified devices and giving sellers a fair, transparent price for their old tech.</p>
+            <p>Every device we refurbish is one less piece of e-waste. Every student who buys from us saves money they can invest in their education.</p>
+          </div>
+          <div class="mission-visual">
+            <div class="value-item"><div class="value-icon">♻️</div><div><h4>Sustainability First</h4><p>Each refurbished laptop saves ~40kg of CO₂ vs manufacturing a new one.</p></div></div>
+            <div class="value-item"><div class="value-icon">🔬</div><div><h4>Quality Certified</h4><p>Every device passes a rigorous 40-point inspection before listing.</p></div></div>
+            <div class="value-item"><div class="value-icon">💰</div><div><h4>Fair Pricing</h4><p>Transparent, data-driven pricing for both buyers and sellers.</p></div></div>
+            <div class="value-item"><div class="value-icon">🤝</div><div><h4>Trust & Transparency</h4><p>What you see is what you get — no hidden fees, no surprises.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--bg2)">
+      <div class="container">
+        <div class="text-center mb-3">
+          <h2 class="section-title">Meet the <span class="text-primary">Team</span></h2>
+          <p class="section-sub">The students behind Retech Revival</p>
+        </div>
+        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-avatar" style="background:rgba(108,99,255,0.2);color:var(--primary)">👨‍💻</div>
+            <h3>Team Member 1</h3>
+            <p>Co-Founder & CEO</p>
+            <p style="font-size:0.78rem;color:var(--text3);margin-top:0.5rem">Product Strategy & Business Development</p>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" style="background:rgba(34,211,238,0.2);color:var(--accent)">👩‍💼</div>
+            <h3>Team Member 2</h3>
+            <p>Co-Founder & COO</p>
+            <p style="font-size:0.78rem;color:var(--text3);margin-top:0.5rem">Operations, Logistics & Customer Experience</p>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" style="background:rgba(16,185,129,0.2);color:var(--green)">🧑‍🎨</div>
+            <h3>Team Member 3</h3>
+            <p>Co-Founder & CTO</p>
+            <p style="font-size:0.78rem;color:var(--text3);margin-top:0.5rem">Technology, Platform & Device Certification</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner" style="background:linear-gradient(135deg,rgba(108,99,255,0.2),rgba(34,211,238,0.1));border:1px solid rgba(108,99,255,0.3);border-radius:24px;padding:4rem 3rem;text-align:center">
+          <h2 style="font-size:2rem;font-weight:800;margin-bottom:0.75rem">Ready to Join the <span class="text-primary">Revival?</span></h2>
+          <p style="color:var(--text2);max-width:480px;margin:0 auto 2rem;line-height:1.7">Whether you want to buy affordable tech or sell your old device, we've got you covered.</p>
+          <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
+            <a href="/catalog.html" class="btn btn-violet btn-lg">🛍️ Browse Devices</a>
+            <a href="/sell.html" class="btn btn-ghost btn-lg">💰 Get Instant Quote</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2025 Retech Revival. All rights reserved.</span>
+        <span>Made with ♻️ for a sustainable future</span>
+      </div>
+    </div>
+  </footer>
+  <div id="toast-container"></div>
+  <script src="js/main.js"></script>
+</body>
+</html>

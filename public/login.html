@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – Retech Revival</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(108,99,255,0.25) 0%, transparent 70%), var(--bg); }
+    .auth-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 420px; box-shadow: var(--shadow), var(--glow); }
+    .auth-logo { text-align: center; margin-bottom: 2rem; }
+    .auth-logo .logo-icon { width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg,var(--primary),var(--accent)); display: inline-flex; align-items: center; justify-content: center; font-size: 1.7rem; margin-bottom: 0.75rem; }
+    .auth-logo h1 { font-size: 1.5rem; font-weight: 800; }
+    .auth-logo p { color: var(--text2); font-size: 0.88rem; }
+    .form-group { margin-bottom: 1rem; }
+    .error-msg { color: var(--red); font-size: 0.82rem; margin-top: 1rem; display: none; }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-icon">♻️</div>
+        <h1>Welcome Back</h1>
+        <p>Login to your Retech Revival account</p>
+      </div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-group">Email Address</label>
+          <input type="email" class="form-control" id="login-email" placeholder="you@email.com" required />
+        </div>
+        <div class="form-group">
+          <label class="form-group">Password</label>
+          <input type="password" class="form-control" id="login-password" placeholder="Your password" required />
+        </div>
+        <div class="error-msg" id="login-error"></div>
+        <button type="submit" class="btn btn-violet w-full mt-3" id="login-btn" style="justify-content:center">Login →</button>
+      </form>
+      <hr class="divider" style="margin:1.5rem 0" />
+      <p style="text-align:center;font-size:0.88rem;color:var(--text2)">Don't have an account? <a href="/signup.html" style="color:var(--primary);font-weight:600">Sign Up Free</a></p>
+      <p style="text-align:center;font-size:0.82rem;color:var(--text3);margin-top:0.75rem"><a href="/" style="color:var(--text3)">← Back to Home</a></p>
+    </div>
+  </div>
+  <div id="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script>
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('login-btn');
+      btn.textContent = 'Logging in...'; btn.disabled = true;
+      const errEl = document.getElementById('login-error');
+      errEl.style.display = 'none';
+      try {
+        const r = await fetch('/api/auth/login', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ email: document.getElementById('login-email').value, password: document.getElementById('login-password').value })
+        });
+        const data = await r.json();
+        if (data.success) { showToast('Welcome back! 👋', 'success'); setTimeout(() => location.href = '/', 900); }
+        else { errEl.textContent = data.message; errEl.style.display = 'block'; btn.textContent = 'Login →'; btn.disabled = false; }
+      } catch { errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block'; btn.textContent = 'Login →'; btn.disabled = false; }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sell Your Laptop – Get Instant Quote | Retech Revival</title>
+  <meta name="description" content="Get an instant price estimate for your old laptop. We pick it up for free and pay you within 48 hours." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .sell-layout { display: grid; grid-template-columns: 1fr 420px; gap: 3rem; padding: 3rem 0; }
+    .wizard { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; }
+    .wizard-steps { display: flex; gap: 0; margin-bottom: 2.5rem; }
+    .wstep {
+      flex: 1; text-align: center; padding: 0.75rem 0.5rem;
+      font-size: 0.8rem; font-weight: 600; color: var(--text3);
+      border-bottom: 2px solid var(--border); transition: all 0.3s;
+    }
+    .wstep.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .wstep.done   { color: var(--green);   border-bottom-color: var(--green); }
+    .wstep-num { width: 24px; height: 24px; border-radius: 50%; background: var(--bg3); border: 1px solid var(--border); color: var(--text3); font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.3rem; font-weight: 700; }
+    .wstep.active .wstep-num { background: var(--primary); color: white; border-color: var(--primary); }
+    .wstep.done .wstep-num   { background: var(--green);   color: white; border-color: var(--green); }
+    .step-panel { display: none; } .step-panel.active { display: block; }
+    .step-panel h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .step-panel p.sub { color: var(--text2); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+    .form-grid.full { grid-template-columns: 1fr; }
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .check-chip {
+      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem;
+      background: var(--bg3); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;
+    }
+    .check-chip input { width: 14px; height: 14px; accent-color: var(--primary); }
+    .check-chip:has(input:checked) { background: rgba(108,99,255,0.15); border-color: var(--primary); color: var(--primary); }
+    .nav-btns { display: flex; justify-content: space-between; margin-top: 1.5rem; }
+    /* Estimate result */
+    .estimate-card {
+      background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(34,211,238,0.08));
+      border: 1px solid rgba(108,99,255,0.3); border-radius: var(--radius); padding: 2rem; text-align: center;
+    }
+    .estimate-range { font-size: 2rem; font-weight: 900; color: var(--primary); }
+    .breakdown-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+    .breakdown-row:last-child { border: none; }
+    /* Side info */
+    .sell-info { display: flex; flex-direction: column; gap: 1.5rem; }
+    .info-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+    .info-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+    .info-step { display: flex; gap: 1rem; margin-bottom: 0.75rem; align-items: flex-start; }
+    .info-step .num { width: 28px; height: 28px; border-radius: 50%; background: rgba(108,99,255,0.15); color: var(--primary); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem; }
+    .info-step div h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.15rem; }
+    .info-step div p  { font-size: 0.8rem; color: var(--text2); margin: 0; }
+    @media (max-width: 900px) { .sell-layout { grid-template-columns: 1fr; } .sell-info { display: none; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-logo"><div class="logo-icon">♻️</div><span>Retech Revival</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a><a href="/catalog.html">Buy</a>
+      <a href="/sell.html" class="active">Sell</a><a href="/about.html">About</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/cart.html" class="cart-btn">🛒 Cart<span class="cart-count" id="cart-count-badge">0</span></a>
+      <a href="/login.html" class="btn-outline" id="nav-login-btn">Login</a>
+      <a href="/signup.html" class="btn-primary" id="nav-signup-btn">Sign Up</a>
+      <div id="nav-user-menu" class="hidden" style="display:flex;align-items:center;gap:0.5rem">
+        <span style="font-size:0.9rem;color:var(--text2)">Hi, <strong id="nav-user-name"></strong></span>
+        <button onclick="logout()" class="btn-outline" style="padding:0.4rem 0.8rem;font-size:0.85rem">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="page-header">
+      <div class="container">
+        <h1>💰 Sell Your Old Laptop</h1>
+        <p>Get an instant price estimate in under 2 minutes. We pick it up for free!</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="sell-layout">
+        <!-- WIZARD -->
+        <div class="wizard">
+          <div class="wizard-steps">
+            <div class="wstep active" id="ws1"><div class="wstep-num">1</div><div>Device Info</div></div>
+            <div class="wstep" id="ws2"><div class="wstep-num">2</div><div>Condition</div></div>
+            <div class="wstep" id="ws3"><div class="wstep-num">3</div><div>Get Quote</div></div>
+            <div class="wstep" id="ws4"><div class="wstep-num">4</div><div>Submit</div></div>
+          </div>
+
+          <!-- STEP 1 -->
+          <div class="step-panel active" id="panel1">
+            <h2>Tell us about your device</h2>
+            <p class="sub">We need a few details to calculate the best price for you.</p>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Brand *</label>
+                <select class="form-control" id="s-brand">
+                  <option value="">Select Brand</option>
+                  <option>Apple</option><option>Dell</option><option>HP</option>
+                  <option>Lenovo</option><option>ASUS</option><option>Microsoft</option>
+                  <option>Acer</option><option>Samsung</option><option>Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Model Name *</label>
+                <input type="text" class="form-control" id="s-model" placeholder="e.g. MacBook Air M1" />
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>RAM</label>
+                <select class="form-control" id="s-ram">
+                  <option value="">Unknown</option>
+                  <option value="4">4 GB</option><option value="8">8 GB</option>
+                  <option value="16">16 GB</option><option value="32">32 GB</option><option value="64">64 GB</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Storage (GB)</label>
+                <select class="form-control" id="s-storage">
+                  <option value="">Unknown</option>
+                  <option value="128">128 GB</option><option value="256">256 GB</option>
+                  <option value="512">512 GB</option><option value="1000">1 TB</option><option value="2000">2 TB</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Purchase Price (₹) *</label>
+                <input type="number" class="form-control" id="s-price" placeholder="e.g. 80000" min="0" />
+              </div>
+              <div class="form-group">
+                <label>Age of Device</label>
+                <select class="form-control" id="s-age">
+                  <option value="0-1">Less than 1 year</option>
+                  <option value="1-2">1–2 years</option>
+                  <option value="2-3" selected>2–3 years</option>
+                  <option value="3-5">3–5 years</option>
+                  <option value="5+">More than 5 years</option>
+                </select>
+              </div>
+            </div>
+            <div class="nav-btns"><span></span><button class="btn btn-violet" onclick="goStep(2)">Next: Condition →</button></div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="step-panel" id="panel2">
+            <h2>What's the condition?</h2>
+            <p class="sub">Honest assessment helps us give the best price.</p>
+            <div class="form-group mb-3">
+              <label>Overall Condition *</label>
+              <select class="form-control" id="s-condition">
+                <option value="">Select Condition</option>
+                <option value="like-new">Like New – No scratches, perfect working order</option>
+                <option value="excellent">Excellent – Minor cosmetic wear, fully functional</option>
+                <option value="good">Good – Some scratches, all features work</option>
+                <option value="fair">Fair – Visible wear, minor issues</option>
+                <option value="poor">Poor – Heavy wear, functional issues</option>
+              </select>
+            </div>
+            <div class="form-group mb-3">
+              <label>What accessories do you have?</label>
+              <div class="checkbox-group">
+                <label class="check-chip"><input type="checkbox" value="charger" id="acc-charger"> 🔌 Original Charger</label>
+                <label class="check-chip"><input type="checkbox" value="box" id="acc-box"> 📦 Original Box</label>
+                <label class="check-chip"><input type="checkbox" value="bag" id="acc-bag"> 💼 Laptop Bag</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Additional Notes (optional)</label>
+              <textarea class="form-control" id="s-notes" rows="3" placeholder="Any specific issues, repairs done, etc."></textarea>
+            </div>
+            <div class="nav-btns">
+              <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
+              <button class="btn btn-violet" onclick="getEstimate()">Get My Price →</button>
+            </div>
+          </div>
+
+          <!-- STEP 3: QUOTE RESULT -->
+          <div class="step-panel" id="panel3">
+            <h2>🎉 Your Estimated Price</h2>
+            <p class="sub">Based on the details provided, here's what we'd offer:</p>
+            <div class="estimate-card mb-3" id="estimate-display"></div>
+            <div class="nav-btns">
+              <button class="btn btn-ghost" onclick="goStep(2)">← Recalculate</button>
+              <button class="btn btn-violet" onclick="goStep(4)">Accept & Schedule Pickup →</button>
+            </div>
+          </div>
+
+          <!-- STEP 4: SUBMIT -->
+          <div class="step-panel" id="panel4">
+            <h2>📅 Schedule Pickup</h2>
+            <p class="sub">Fill your contact details and we'll arrange free doorstep pickup.</p>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" class="form-control" id="s-name" placeholder="Your name" />
+              </div>
+              <div class="form-group">
+                <label>Phone *</label>
+                <input type="tel" class="form-control" id="s-phone" placeholder="10-digit mobile" />
+              </div>
+            </div>
+            <div class="form-group mb-2">
+              <label>Email</label>
+              <input type="email" class="form-control" id="s-email" placeholder="your@email.com" />
+            </div>
+            <div class="form-group mb-2">
+              <label>Pickup Address *</label>
+              <textarea class="form-control" id="s-address" rows="3" placeholder="Full address with pincode"></textarea>
+            </div>
+            <div class="form-group mb-3">
+              <label>Preferred Pickup Date</label>
+              <input type="date" class="form-control" id="s-date" />
+            </div>
+            <div class="nav-btns">
+              <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
+              <button class="btn btn-green" onclick="submitSell()">✅ Confirm Sell Request</button>
+            </div>
+          </div>
+
+          <!-- STEP 5: SUCCESS -->
+          <div class="step-panel" id="panel5" style="text-align:center;padding:2rem 0">
+            <div style="font-size:4rem;margin-bottom:1rem">🎊</div>
+            <h2>Request Submitted!</h2>
+            <p style="color:var(--text2);margin:0.75rem 0 2rem">Our team will call you within 24 hours to confirm the pickup. You'll receive payment within 48 hours after inspection.</p>
+            <div id="request-details" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;text-align:left"></div>
+            <a href="/catalog.html" class="btn btn-violet">Browse Laptops to Buy</a>
+          </div>
+        </div>
+
+        <!-- SIDE INFO -->
+        <div class="sell-info">
+          <div class="info-card">
+            <h3>How Selling Works</h3>
+            <div class="info-step"><div class="num">1</div><div><h4>Get Instant Quote</h4><p>Fill our form and get a price estimate in 2 minutes, no obligations.</p></div></div>
+            <div class="info-step"><div class="num">2</div><div><h4>Free Doorstep Pickup</h4><p>Schedule a convenient time and our agent picks up the device for free.</p></div></div>
+            <div class="info-step"><div class="num">3</div><div><h4>Quick Inspection</h4><p>Our engineers verify the device condition on the spot.</p></div></div>
+            <div class="info-step"><div class="num">4</div><div><h4>Instant Payment</h4><p>Get paid directly to your bank account within 48 hours.</p></div></div>
+          </div>
+          <div class="info-card">
+            <h3>Why Sell with Us?</h3>
+            <div style="display:flex;flex-direction:column;gap:0.6rem">
+              <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>Best price guaranteed — we beat competitor quotes</span></div>
+              <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>100% free doorstep pickup across India</span></div>
+              <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>Payment in 48 hours — no delays</span></div>
+              <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>Safe & secure data wipe certified</span></div>
+              <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>All brands & conditions accepted</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2025 Retech Revival. All rights reserved.</span>
+        <span>Made with ♻️ for a sustainable future</span>
+      </div>
+    </div>
+  </footer>
+  <div id="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script>
+    let currentStep = 1;
+    let estimateResult = null;
+
+    // Set min date for pickup to tomorrow
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('s-date').min = tomorrow.toISOString().split('T')[0];
+
+    function goStep(n) {
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel' + n).classList.add('active');
+      for (let i = 1; i <= 4; i++) {
+        const ws = document.getElementById('ws' + i);
+        if (!ws) continue;
+        ws.classList.remove('active','done');
+        if (i < n) ws.classList.add('done');
+        if (i === n) ws.classList.add('active');
+      }
+      currentStep = n;
+      window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+
+    async function getEstimate() {
+      const brand   = document.getElementById('s-brand').value;
+      const price   = document.getElementById('s-price').value;
+      const cond    = document.getElementById('s-condition').value;
+      if (!brand || !price || !cond) { showToast('Please fill all required fields (*)','error'); return; }
+
+      const accessories = [];
+      if (document.getElementById('acc-charger').checked) accessories.push('charger');
+      if (document.getElementById('acc-box').checked)     accessories.push('box');
+      if (document.getElementById('acc-bag').checked)     accessories.push('bag');
+
+      const body = {
+        brand, purchasePrice: price, condition: cond,
+        ram: document.getElementById('s-ram').value,
+        storage: document.getElementById('s-storage').value,
+        age: document.getElementById('s-age').value,
+        accessories
+      };
+
+      try {
+        const r = await fetch('/api/sell/estimate', {
+          method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+        });
+        const data = await r.json();
+        if (!data.success) { showToast(data.message,'error'); return; }
+        estimateResult = data.data;
+        const d = data.data;
+        document.getElementById('estimate-display').innerHTML = `
+          <p style="color:var(--text2);font-size:0.88rem;margin-bottom:0.5rem">Estimated offer for your ${document.getElementById('s-model').value || brand + ' Laptop'}</p>
+          <div class="estimate-range">${formatPrice(d.minPrice)} – ${formatPrice(d.maxPrice)}</div>
+          <p style="color:var(--text2);font-size:0.82rem;margin:0.5rem 0 1.5rem">Final price confirmed after physical inspection</p>
+          <div style="text-align:left">
+            <div class="breakdown-row"><span>Base device value</span><span>${formatPrice(d.breakdown.baseValue)}</span></div>
+            <div class="breakdown-row"><span style="color:var(--red)">Condition adjustment</span><span style="color:var(--red)">– ${formatPrice(d.breakdown.conditionDeduction)}</span></div>
+            <div class="breakdown-row"><span style="color:var(--red)">Age depreciation</span><span style="color:var(--red)">– ${formatPrice(d.breakdown.ageDeduction)}</span></div>
+            ${d.breakdown.ramBonus ? `<div class="breakdown-row"><span style="color:var(--green)">High RAM bonus</span><span style="color:var(--green)">+ ${formatPrice(d.breakdown.ramBonus)}</span></div>` : ''}
+            ${d.breakdown.storageBonus ? `<div class="breakdown-row"><span style="color:var(--green)">Storage bonus</span><span style="color:var(--green)">+ ${formatPrice(d.breakdown.storageBonus)}</span></div>` : ''}
+            ${d.breakdown.accessoriesBonus ? `<div class="breakdown-row"><span style="color:var(--green)">Accessories bonus</span><span style="color:var(--green)">+ ${formatPrice(d.breakdown.accessoriesBonus)}</span></div>` : ''}
+            <div class="breakdown-row" style="font-weight:700;font-size:1rem"><span>Estimated offer</span><span style="color:var(--primary)">${formatPrice(d.estimated)}</span></div>
+          </div>
+        `;
+        goStep(3);
+      } catch { showToast('Failed to get estimate. Please try again.','error'); }
+    }
+
+    async function submitSell() {
+      const name    = document.getElementById('s-name').value;
+      const phone   = document.getElementById('s-phone').value;
+      const address = document.getElementById('s-address').value;
+      if (!name || !phone || !address) { showToast('Please fill all required fields (*)','error'); return; }
+
+      const body = {
+        name, phone, email: document.getElementById('s-email').value,
+        address, estimate: estimateResult?.estimated,
+        deviceDetails: `${document.getElementById('s-brand').value} ${document.getElementById('s-model').value}`
+      };
+
+      try {
+        const r = await fetch('/api/sell/submit', {
+          method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+        });
+        const data = await r.json();
+        if (!data.success) { showToast(data.message,'error'); return; }
+        document.getElementById('request-details').innerHTML = `
+          <div class="breakdown-row"><span>Request ID</span><strong>${data.data.requestId}</strong></div>
+          <div class="breakdown-row"><span>Estimated Price</span><strong class="text-primary">${formatPrice(data.data.estimatedPrice || 0)}</strong></div>
+          <div class="breakdown-row"><span>Pickup Status</span><span class="badge badge-green">Scheduled</span></div>
+          <div class="breakdown-row"><span>Our team calls you in</span><strong>${data.data.contactTime}</strong></div>
+        `;
+        document.querySelectorAll('.wstep').forEach(ws => ws.classList.add('done'));
+        document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('panel5').classList.add('active');
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+      } catch { showToast('Failed to submit. Please try again.','error'); }
+    }
+  </script>
+</body>
+</html>
