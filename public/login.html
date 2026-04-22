@@ -5,6 +5,7 @@
   <title>Login – Retech Revival</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
+    .lucide { width: 1em; height: 1em; vertical-align: middle; }
     .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem;
       background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(108,99,255,0.25) 0%, transparent 70%), var(--bg); }
     .auth-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 420px; box-shadow: var(--shadow), var(--glow); }
@@ -15,12 +16,13 @@
     .form-group { margin-bottom: 1rem; }
     .error-msg { color: var(--red); font-size: 0.82rem; margin-top: 1rem; display: none; }
   </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <div class="auth-page">
     <div class="auth-card">
       <div class="auth-logo">
-        <div class="logo-icon">♻️</div>
+        <div class="logo-icon"><i data-lucide="recycle"></i></div>
         <h1>Welcome Back</h1>
         <p>Login to your Retech Revival account</p>
       </div>
@@ -61,5 +63,6 @@
       } catch { errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block'; btn.textContent = 'Login →'; btn.disabled = false; }
     }
   </script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>

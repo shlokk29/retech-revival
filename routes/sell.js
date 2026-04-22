@@ -15,7 +15,7 @@ const ageMultiplier = { '0-1': 1.0, '1-2': 0.85, '2-3': 0.70, '3-5': 0.55, '5+':
 
 // POST /api/sell/estimate
 router.post('/estimate', (req, res) => {
-  const { brand, purchasePrice, condition, ram, storage, age, accessories } = req.body;
+  const { brand, purchasePrice, condition, detailedCondition, ram, storage, age, accessories } = req.body;
 
   if (!brand || !purchasePrice || !condition) {
     return res.status(400).json({ success: false, message: 'Brand, purchase price and condition are required' });
@@ -23,7 +23,7 @@ router.post('/estimate', (req, res) => {
 
   const base = Number(purchasePrice);
   const bm = brandMultiplier[brand] || 0.45;
-  const cm = conditionMultiplier[condition] || 0.50;
+  let cm = conditionMultiplier[condition] || 0.50; // default base condition multiplier
   const am = ageMultiplier[age] || 0.65;
   const rb = ramBonus[String(ram)] || 0;
   const sb = storageBonus[String(storage)] || 0;
@@ -34,7 +34,40 @@ router.post('/estimate', (req, res) => {
     if (accessories.includes('bag')) accBonus += 300;
   }
 
-  const estimated = Math.round((base * bm * cm * am) + rb + sb + accBonus);
+  let detailDeduction = 0;
+  let isDead = false;
+
+  // Process detailed condition if provided
+  if (detailedCondition) {
+    // Override base condition logic
+    cm = 0.88; // Start with 'like-new' multiplier and deduct based on specifics
+
+    if (detailedCondition.power === 'no') {
+      isDead = true;
+      cm = 0.15; // Dead device value
+    } else {
+      // Display issues
+      if (detailedCondition.display === 'scratches') detailDeduction += base * bm * 0.05;
+      else if (detailedCondition.display === 'spots') detailDeduction += base * bm * 0.15;
+      else if (detailedCondition.display === 'broken') detailDeduction += base * bm * 0.35;
+
+      // Physical condition
+      if (detailedCondition.physical === 'scratches') detailDeduction += base * bm * 0.05;
+      else if (detailedCondition.physical === 'dents') detailDeduction += base * bm * 0.10;
+      else if (detailedCondition.physical === 'broken') detailDeduction += base * bm * 0.20;
+
+      // Hardware issues
+      if (detailedCondition.issues && detailedCondition.issues.length > 0) {
+        const issuePenalty = base * bm * 0.05; // 5% base value penalty per issue
+        detailDeduction += detailedCondition.issues.length * issuePenalty;
+      }
+    }
+  }
+
+  let estimated = Math.round((base * bm * cm * am) - detailDeduction + rb + sb + accBonus);
+  
+  if (estimated < 500) estimated = 500; // Minimum salvage value
+
   const minPrice = Math.round(estimated * 0.90);
   const maxPrice = Math.round(estimated * 1.10);
 
@@ -46,7 +79,7 @@ router.post('/estimate', (req, res) => {
       maxPrice,
       breakdown: {
         baseValue: Math.round(base * bm),
-        conditionDeduction: Math.round(base * bm * (1 - cm)),
+        conditionDeduction: Math.round((base * bm * (1 - cm)) + detailDeduction),
         ageDeduction: Math.round(base * bm * cm * (1 - am)),
         ramBonus: rb,
         storageBonus: sb,

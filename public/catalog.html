@@ -7,6 +7,7 @@
   <meta name="description" content="Browse our full catalog of certified refurbished laptops. Filter by brand, condition, price and more." />
   <link rel="stylesheet" href="css/style.css" />
   <style>
+    .lucide { width: 1em; height: 1em; vertical-align: middle; }
     .catalog-layout { display: grid; grid-template-columns: 260px 1fr; gap: 2rem; padding: 2.5rem 0; }
     .filters-panel {
       background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
@@ -52,17 +53,18 @@
     @media (max-width: 1000px) { .catalog-layout { grid-template-columns: 1fr; } .filters-panel { position: static; } .product-grid-catalog { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 600px) { .product-grid-catalog { grid-template-columns: 1fr; } }
   </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <!-- NAVBAR -->
   <nav class="navbar" id="navbar">
-    <a href="/" class="nav-logo"><div class="logo-icon">♻️</div><span>Retech Revival</span></a>
+    <a href="/" class="nav-logo"><div class="logo-icon"><i data-lucide="recycle"></i></div><span>Retech Revival</span></a>
     <div class="nav-links" id="nav-links">
       <a href="/">Home</a><a href="/catalog.html" class="active">Buy</a>
       <a href="/sell.html">Sell</a><a href="/about.html">About</a>
     </div>
     <div class="nav-actions">
-      <a href="/cart.html" class="cart-btn"><span>🛒</span> Cart<span class="cart-count" id="cart-count-badge">0</span></a>
+      <a href="/cart.html" class="cart-btn"><span><i data-lucide="shopping-cart"></i></span> Cart<span class="cart-count" id="cart-count-badge">0</span></a>
       <a href="/login.html" class="btn-outline" id="nav-login-btn">Login</a>
       <a href="/signup.html" class="btn-primary" id="nav-signup-btn">Sign Up</a>
       <div id="nav-user-menu" class="hidden" style="display:flex;align-items:center;gap:0.5rem">
@@ -139,7 +141,7 @@
         <main>
           <div class="search-bar">
             <input type="text" id="search-input" placeholder="Search laptops... e.g. MacBook, Dell, gaming" />
-            <button onclick="applyFilters()" class="btn btn-violet" style="padding:0.7rem 1.3rem">🔍 Search</button>
+            <button onclick="applyFilters()" class="btn btn-violet" style="padding:0.7rem 1.3rem"><i data-lucide="search"></i> Search</button>
           </div>
           <div class="catalog-header">
             <h2 id="results-count">Loading products...</h2>
@@ -157,7 +159,7 @@
     <div class="container">
       <div class="footer-bottom">
         <span>© 2025 Retech Revival. All rights reserved.</span>
-        <span>Made with ♻️ for a sustainable future</span>
+        <span>Made with <i data-lucide="recycle"></i> for a sustainable future</span>
       </div>
     </div>
   </footer>
@@ -220,14 +222,13 @@
         const products = data.data || [];
         document.getElementById('results-count').textContent = `${products.length} device${products.length !== 1 ? 's' : ''} found`;
         if (!products.length) {
-          grid.innerHTML = `<div class="no-results" style="grid-column:1/-1"><div class="icon">🔍</div><h3>No devices found</h3><p>Try adjusting your filters or search term.</p></div>`;
+          grid.innerHTML = `<div class="no-results" style="grid-column:1/-1"><div class="icon"><i data-lucide="search"></i></div><h3>No devices found</h3><p>Try adjusting your filters or search term.</p></div>`;
           return;
         }
         grid.innerHTML = products.map(p => `
           <div class="prod-card" onclick="location.href='/product.html?id=${p._id}'">
-            <div class="prod-img">
-              <div class="prod-discount">-${Math.round((1-p.price/p.originalPrice)*100)}%</div>
-              💻
+            <div class="prod-img" style="background: url(\'${p.images?.[0] || "img/laptop2.png"}\') center/cover; padding:0;">
+              <div class="prod-discount" style="z-index:2;">-${Math.round((1-p.price/p.originalPrice)*100)}%</div>
             </div>
             <div class="prod-body">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.3rem">
@@ -268,5 +269,6 @@
     }
     loadProducts();
   </script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>

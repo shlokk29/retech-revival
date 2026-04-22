@@ -65,20 +65,20 @@ async function loadAuthState() {
 }
 
 function updateNavAuth() {
-  const loginBtn  = document.getElementById('nav-login-btn');
+  const loginBtn = document.getElementById('nav-login-btn');
   const signupBtn = document.getElementById('nav-signup-btn');
-  const userMenu  = document.getElementById('nav-user-menu');
-  const userName  = document.getElementById('nav-user-name');
+  const userMenu = document.getElementById('nav-user-menu');
+  const userName = document.getElementById('nav-user-name');
 
   if (currentUser) {
-    if (loginBtn)  loginBtn.classList.add('hidden');
+    if (loginBtn) loginBtn.classList.add('hidden');
     if (signupBtn) signupBtn.classList.add('hidden');
-    if (userMenu)  userMenu.classList.remove('hidden');
-    if (userName)  userName.textContent = currentUser.name.split(' ')[0];
+    if (userMenu) userMenu.classList.remove('hidden');
+    if (userName) userName.textContent = currentUser.name.split(' ')[0];
   } else {
-    if (loginBtn)  loginBtn.classList.remove('hidden');
+    if (loginBtn) loginBtn.classList.remove('hidden');
     if (signupBtn) signupBtn.classList.remove('hidden');
-    if (userMenu)  userMenu.classList.add('hidden');
+    if (userMenu) userMenu.classList.add('hidden');
   }
 }
 
@@ -96,7 +96,7 @@ async function updateCartCount() {
     const data = await r.json();
     const badge = document.getElementById('cart-count-badge');
     if (badge) badge.textContent = data.data.count || 0;
-  } catch {}
+  } catch { }
 }
 
 // ── Add to cart ───────────────────────────────────────────────
@@ -122,3 +122,40 @@ async function addToCart(productId, name, price, brand, condition) {
 // Init
 loadAuthState();
 updateCartCount();
+
+// ── Theme Management ──────────────────────────────────────────
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  if (savedTheme === 'dark') document.documentElement.dataset.theme = 'dark';
+
+  const toggleBtn = document.createElement('button');
+  toggleBtn.id = 'theme-toggle';
+  toggleBtn.style.cssText = 'position:fixed; bottom:20px; left:20px; z-index:9999; background:var(--bg2); border:1px solid var(--border); border-radius:50%; width:44px; height:44px; cursor:pointer; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center; color:var(--text); transition:all 0.3s ease;';
+
+  const updateIcon = () => {
+    toggleBtn.innerHTML = document.documentElement.dataset.theme === 'dark'
+      ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>'
+      : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+  };
+
+  toggleBtn.onmouseenter = () => toggleBtn.style.transform = 'scale(1.1)';
+  toggleBtn.onmouseleave = () => toggleBtn.style.transform = 'scale(1)';
+
+  toggleBtn.onclick = () => {
+    const current = document.documentElement.dataset.theme;
+    const next = current === 'dark' ? 'light' : 'dark';
+    if (next === 'dark') document.documentElement.dataset.theme = 'dark';
+    else delete document.documentElement.dataset.theme;
+    localStorage.setItem('theme', next);
+    updateIcon();
+  };
+
+  document.body.appendChild(toggleBtn);
+  updateIcon();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTheme);
+} else {
+  initTheme();
+}

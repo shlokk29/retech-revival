@@ -15,7 +15,7 @@ const products = [
     battery: '12 hours',
     warranty: '6 months',
     description: 'Apple M1 chip with incredible performance and battery life. Near-mint condition, fully tested and certified by Retech Revival engineers.',
-    images: [],
+    images: ['img/macbook_pro.png'],
     rating: 4.9,
     reviews: 124,
     tags: ['apple', 'macbook', 'm1', 'ultrabook']
@@ -34,7 +34,7 @@ const products = [
     battery: '8 hours',
     warranty: '6 months',
     description: 'Premium ultrabook with stunning display and powerful performance. Ideal for developers and designers.',
-    images: [],
+    images: ['img/dell_xps.png'],
     rating: 4.7,
     reviews: 89,
     tags: ['dell', 'xps', 'ultrabook', 'developer']
@@ -53,7 +53,7 @@ const products = [
     battery: '7 hours',
     warranty: '3 months',
     description: 'Business-class durability meets lightweight design. Military-grade certified. Perfect for students and professionals.',
-    images: [],
+    images: ['img/thinkpad.png'],
     rating: 4.6,
     reviews: 67,
     tags: ['lenovo', 'thinkpad', 'business', 'professional']
@@ -72,7 +72,7 @@ const products = [
     battery: '10 hours',
     warranty: '6 months',
     description: 'Convertible 2-in-1 with stunning OLED display. Use as laptop or tablet. Barely used, like new.',
-    images: [],
+    images: ['img/hp_spectre.png'],
     rating: 4.8,
     reviews: 45,
     tags: ['hp', 'spectre', '2-in-1', 'convertible', 'oled']
@@ -91,7 +91,7 @@ const products = [
     battery: '6 hours',
     warranty: '6 months',
     description: 'Powerful gaming laptop with AMD Ryzen 9 and NVIDIA RTX 3060. Excellent for gaming and content creation.',
-    images: [],
+    images: ['img/asus_rog.png'],
     rating: 4.8,
     reviews: 212,
     tags: ['asus', 'rog', 'gaming', 'amd', 'rtx']
@@ -110,7 +110,7 @@ const products = [
     battery: '18 hours',
     warranty: '6 months',
     description: 'The latest M2 chip in a compact form. Unmatched performance-per-watt. Perfect for creative professionals.',
-    images: [],
+    images: ['img/macbook_pro.png'],
     rating: 4.95,
     reviews: 56,
     tags: ['apple', 'macbook', 'm2', 'pro']
@@ -129,7 +129,7 @@ const products = [
     battery: '9 hours',
     warranty: '3 months',
     description: 'Ultra-lightweight at just 990g. Great battery life and everyday performance. Budget-friendly pick.',
-    images: [],
+    images: ['img/acer_swift.png'],
     rating: 4.3,
     reviews: 34,
     tags: ['acer', 'swift', 'lightweight', 'budget']
@@ -148,7 +148,7 @@ const products = [
     battery: '8 hours',
     warranty: '6 months',
     description: 'Enterprise-grade business laptop with built-in privacy screen. Ideal for professionals handling sensitive data.',
-    images: [],
+    images: ['img/hp.png'],
     rating: 4.5,
     reviews: 28,
     tags: ['hp', 'elitebook', 'business', 'enterprise', 'privacy']
@@ -167,7 +167,7 @@ const products = [
     battery: '5 hours',
     warranty: '3 months',
     description: 'Entry-level gaming laptop with great performance for the price. Comes with NVIDIA GTX 1650.',
-    images: [],
+    images: ['img/lenovo.png'],
     rating: 4.2,
     reviews: 78,
     tags: ['lenovo', 'gaming', 'amd', 'gtx', 'budget']
@@ -186,7 +186,7 @@ const products = [
     battery: '8 hours',
     warranty: '6 months',
     description: 'Premium 2-in-1 tablet with detachable keyboard. Exceptional pen input for note-taking and creative work.',
-    images: [],
+    images: ['img/microsoft_surface.png'],
     rating: 4.7,
     reviews: 41,
     tags: ['microsoft', 'surface', '2-in-1', 'tablet', 'pen']

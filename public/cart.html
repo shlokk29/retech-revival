@@ -5,6 +5,7 @@
   <title>Your Cart – Retech Revival</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
+    .lucide { width: 1em; height: 1em; vertical-align: middle; }
     .cart-layout { display: grid; grid-template-columns: 1fr 360px; gap: 2rem; padding: 2.5rem 0; }
     .cart-item {
       background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
@@ -36,16 +37,17 @@
     .modal h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 1.25rem; }
     @media (max-width: 800px) { .cart-layout { grid-template-columns: 1fr; } .summary-card { position: static; } }
   </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-logo"><div class="logo-icon">♻️</div><span>Retech Revival</span></a>
+    <a href="/" class="nav-logo"><div class="logo-icon"><i data-lucide="recycle"></i></div><span>Retech Revival</span></a>
     <div class="nav-links">
       <a href="/">Home</a><a href="/catalog.html">Buy</a>
       <a href="/sell.html">Sell</a><a href="/about.html">About</a>
     </div>
     <div class="nav-actions">
-      <a href="/cart.html" class="cart-btn active">🛒 Cart<span class="cart-count" id="cart-count-badge">0</span></a>
+      <a href="/cart.html" class="cart-btn active"><i data-lucide="shopping-cart"></i> Cart<span class="cart-count" id="cart-count-badge">0</span></a>
       <a href="/login.html" class="btn-outline" id="nav-login-btn">Login</a>
       <a href="/signup.html" class="btn-primary" id="nav-signup-btn">Sign Up</a>
       <div id="nav-user-menu" class="hidden" style="display:flex;align-items:center;gap:0.5rem">
@@ -58,7 +60,7 @@
   <div class="page-wrapper">
     <div class="page-header">
       <div class="container">
-        <h1>🛒 Your Cart</h1>
+        <h1><i data-lucide="shopping-cart"></i> Your Cart</h1>
         <p>Review your items before checkout</p>
       </div>
     </div>
@@ -81,7 +83,7 @@
   <div class="modal-overlay hidden" id="checkout-modal">
     <div class="modal">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
-        <h2>📦 Checkout</h2>
+        <h2><i data-lucide="package"></i> Checkout</h2>
         <button onclick="closeCheckout()" style="background:none;border:none;color:var(--text2);font-size:1.3rem;cursor:pointer">✕</button>
       </div>
       <div class="form-group mb-2">
@@ -114,14 +116,14 @@
         <span style="font-weight:700">Order Total</span>
         <span class="text-primary fw-800" id="modal-total" style="font-size:1.15rem"></span>
       </div>
-      <button class="btn btn-green w-full" onclick="placeOrder()">✅ Place Order</button>
+      <button class="btn btn-green w-full" onclick="placeOrder()"><i data-lucide="check-circle-2"></i> Place Order</button>
     </div>
   </div>
 
   <!-- ORDER SUCCESS MODAL -->
   <div class="modal-overlay hidden" id="success-modal">
     <div class="modal" style="text-align:center">
-      <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+      <div style="font-size:4rem;margin-bottom:1rem"><i data-lucide="party-popper"></i></div>
       <h2>Order Placed!</h2>
       <p style="color:var(--text2);margin:0.75rem 0 1.5rem">Your order has been confirmed. You'll receive it within 3 business days.</p>
       <div id="order-success-details" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:var(--radius-sm);padding:1.25rem;margin-bottom:1.5rem;text-align:left"></div>
@@ -142,13 +144,13 @@
         const { items, total, count } = data.data;
         document.getElementById('cart-count-badge').textContent = count;
         if (!items || items.length === 0) {
-          container.innerHTML = `<div class="empty-cart"><div class="icon">🛒</div><h3>Your cart is empty</h3><p class="text-muted">Add some refurbished laptops to get started!</p><a href="/catalog.html" class="btn btn-violet mt-3">Browse Devices</a></div>`;
+          container.innerHTML = `<div class="empty-cart"><div class="icon"><i data-lucide="shopping-cart"></i></div><h3>Your cart is empty</h3><p class="text-muted">Add some refurbished laptops to get started!</p><a href="/catalog.html" class="btn btn-violet mt-3">Browse Devices</a></div>`;
           summaryRows.innerHTML = '<p class="text-muted" style="text-align:center;font-size:0.85rem">Add items to see summary</p>';
           return;
         }
         container.innerHTML = items.map(item => `
           <div class="cart-item" id="item-${item.productId}">
-            <div class="cart-item-icon">💻</div>
+            <div class="cart-item-icon" style="padding:0; overflow:hidden;"><img src="${item.image || '/img/' + (item.brand ? item.brand.toLowerCase() : '') + '.png'}" onerror="this.src='/img/laptop2.png'" style="width:100%; height:100%; object-fit:cover;"></div>
             <div class="cart-item-info">
               <h4>${item.name}</h4>
               <p>${item.brand} · <span class="badge ${conditionBadgeClass(item.condition)}" style="font-size:0.7rem">${item.condition}</span></p>
@@ -161,7 +163,7 @@
                 <button class="qty-btn" onclick="updateQty('${item.productId}', ${item.quantity + 1})">+</button>
               </div>
               <div style="font-weight:700">${formatPrice(item.price * item.quantity)}</div>
-              <button class="remove-btn" onclick="removeItem('${item.productId}')">🗑 Remove</button>
+              <button class="remove-btn" onclick="removeItem('${item.productId}')"><i data-lucide="trash-2"></i> Remove</button>
             </div>
           </div>
         `).join('');
@@ -223,5 +225,6 @@
 
     loadCart();
   </script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>

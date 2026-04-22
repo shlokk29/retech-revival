@@ -5,6 +5,7 @@
   <title>Product Details – Retech Revival</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
+    .lucide { width: 1em; height: 1em; vertical-align: middle; }
     .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; padding: 3rem 0; }
     .product-img-box {
       background: linear-gradient(135deg, rgba(108,99,255,0.1), rgba(34,211,238,0.07));
@@ -25,16 +26,17 @@
     .warranty-banner { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); border-radius: var(--radius-sm); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; margin-top: 1.25rem; }
     @media (max-width: 800px) { .product-layout { grid-template-columns: 1fr; } .specs-grid { grid-template-columns: 1fr 1fr; } }
   </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-logo"><div class="logo-icon">♻️</div><span>Retech Revival</span></a>
+    <a href="/" class="nav-logo"><div class="logo-icon"><i data-lucide="recycle"></i></div><span>Retech Revival</span></a>
     <div class="nav-links">
       <a href="/">Home</a><a href="/catalog.html" class="active">Buy</a>
       <a href="/sell.html">Sell</a><a href="/about.html">About</a>
     </div>
     <div class="nav-actions">
-      <a href="/cart.html" class="cart-btn">🛒 Cart<span class="cart-count" id="cart-count-badge">0</span></a>
+      <a href="/cart.html" class="cart-btn"><i data-lucide="shopping-cart"></i> Cart<span class="cart-count" id="cart-count-badge">0</span></a>
       <a href="/login.html" class="btn-outline" id="nav-login-btn">Login</a>
       <a href="/signup.html" class="btn-primary" id="nav-signup-btn">Sign Up</a>
       <div id="nav-user-menu" class="hidden" style="display:flex;align-items:center;gap:0.5rem">
@@ -73,7 +75,7 @@
         document.title = p.name + ' – Retech Revival';
         const discount = Math.round((1 - p.price / p.originalPrice) * 100);
         container.innerHTML = `
-          <div class="product-img-box">💻</div>
+          <div class="product-img-box" style="padding:0; overflow:hidden;"><img src="${p.images?.[0] || 'img/laptop1.png'}" onerror="this.src='img/laptop1.png'" style="width:100%; height:100%; object-fit:cover;" alt="Laptop"></div>
           <div class="product-details">
             <div class="product-meta">
               <span class="badge ${conditionBadgeClass(p.condition)}">${p.condition}</span>
@@ -97,12 +99,12 @@
               <div class="spec-item"><div class="spec-label">Brand</div><div class="spec-val">${p.brand}</div></div>
             </div>
             <div class="action-btns">
-              <button class="btn btn-violet btn-lg" onclick="addToCart('${p._id}','${p.name}',${p.price},'${p.brand}','${p.condition}')">🛒 Add to Cart</button>
+              <button class="btn btn-violet btn-lg" onclick="addToCart('${p._id}','${p.name}',${p.price},'${p.brand}','${p.condition}')"><i data-lucide="shopping-cart"></i> Add to Cart</button>
               <a href="/cart.html" class="btn btn-ghost btn-lg">View Cart</a>
             </div>
             <div class="warranty-banner">
-              <span style="font-size:1.5rem">🛡️</span>
-              <div><strong>${p.warranty} Warranty</strong><br><span style="font-size:0.82rem;color:var(--text2)">All devices pass our 40-point quality inspection before listing</span></div>
+              <span style="font-size:1.5rem"><i data-lucide="shield-check"></i></span>
+              <div><strong>${p.warranty} Warranty</strong><br><span style="font-size:0.82rem;color:var(--text2)">Quality tested and guaranteed</span></div>
             </div>
           </div>
         `;
@@ -110,5 +112,6 @@
     }
     loadProduct();
   </script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>

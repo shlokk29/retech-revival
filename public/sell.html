@@ -6,6 +6,7 @@
   <meta name="description" content="Get an instant price estimate for your old laptop. We pick it up for free and pay you within 48 hours." />
   <link rel="stylesheet" href="css/style.css" />
   <style>
+    .lucide { width: 1em; height: 1em; vertical-align: middle; }
     .sell-layout { display: grid; grid-template-columns: 1fr 420px; gap: 3rem; padding: 3rem 0; }
     .wizard { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; }
     .wizard-steps { display: flex; gap: 0; margin-bottom: 2.5rem; }
@@ -51,16 +52,17 @@
     .info-step div p  { font-size: 0.8rem; color: var(--text2); margin: 0; }
     @media (max-width: 900px) { .sell-layout { grid-template-columns: 1fr; } .sell-info { display: none; } }
   </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-logo"><div class="logo-icon">♻️</div><span>Retech Revival</span></a>
+    <a href="/" class="nav-logo"><div class="logo-icon"><i data-lucide="recycle"></i></div><span>Retech Revival</span></a>
     <div class="nav-links">
       <a href="/">Home</a><a href="/catalog.html">Buy</a>
       <a href="/sell.html" class="active">Sell</a><a href="/about.html">About</a>
     </div>
     <div class="nav-actions">
-      <a href="/cart.html" class="cart-btn">🛒 Cart<span class="cart-count" id="cart-count-badge">0</span></a>
+      <a href="/cart.html" class="cart-btn"><i data-lucide="shopping-cart"></i> Cart<span class="cart-count" id="cart-count-badge">0</span></a>
       <a href="/login.html" class="btn-outline" id="nav-login-btn">Login</a>
       <a href="/signup.html" class="btn-primary" id="nav-signup-btn">Sign Up</a>
       <div id="nav-user-menu" class="hidden" style="display:flex;align-items:center;gap:0.5rem">
@@ -73,7 +75,7 @@
   <div class="page-wrapper">
     <div class="page-header">
       <div class="container">
-        <h1>💰 Sell Your Old Laptop</h1>
+        <h1><i data-lucide="circle-dollar-sign"></i> Sell Your Old Laptop</h1>
         <p>Get an instant price estimate in under 2 minutes. We pick it up for free!</p>
       </div>
     </div>
@@ -99,13 +101,19 @@
                 <select class="form-control" id="s-brand">
                   <option value="">Select Brand</option>
                   <option>Apple</option><option>Dell</option><option>HP</option>
-                  <option>Lenovo</option><option>ASUS</option><option>Microsoft</option>
-                  <option>Acer</option><option>Samsung</option><option>Other</option>
+                  <option>Lenovo</option><option>ASUS</option><option>Acer</option>
+                  <option>Microsoft</option><option>Samsung</option><option>MSI</option>
+                  <option>Xiaomi / Redmi</option><option>Realme</option><option>Honor</option>
+                  <option>Infinix</option><option>LG</option><option>Razer</option>
+                  <option>Gigabyte</option><option>Vaio</option><option>Fujitsu</option>
+                  <option>Other</option>
                 </select>
               </div>
               <div class="form-group">
                 <label>Model Name *</label>
-                <input type="text" class="form-control" id="s-model" placeholder="e.g. MacBook Air M1" />
+                <select class="form-control" id="s-model">
+                  <option value="">Select Brand First</option>
+                </select>
               </div>
             </div>
             <div class="form-grid">
@@ -126,52 +134,96 @@
                 </select>
               </div>
             </div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label>Purchase Price (₹) *</label>
-                <input type="number" class="form-control" id="s-price" placeholder="e.g. 80000" min="0" />
-              </div>
-              <div class="form-group">
-                <label>Age of Device</label>
-                <select class="form-control" id="s-age">
-                  <option value="0-1">Less than 1 year</option>
-                  <option value="1-2">1–2 years</option>
-                  <option value="2-3" selected>2–3 years</option>
-                  <option value="3-5">3–5 years</option>
-                  <option value="5+">More than 5 years</option>
-                </select>
-              </div>
+            <div class="form-group" id="gpu-container" style="display: none; margin-bottom: 1rem;">
+              <label>Dedicated GPU (dGPU)</label>
+              <select class="form-control" id="s-gpu">
+                <option value="">Integrated / Unknown</option>
+                <option value="entry">Entry (GTX 1650, RTX 3050, MX series)</option>
+                <option value="mid">Mid (RTX 3060, RTX 4050, RTX 4060)</option>
+                <option value="high">High (RTX 3070, RTX 4070, RX 6700)</option>
+                <option value="ultra">Ultra (RTX 3080/4080, RTX 4090)</option>
+                <option value="mac_pro">Apple Pro / Max GPU</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label>Age of Device</label>
+              <select class="form-control" id="s-age">
+                <option value="0-1">Less than 1 year</option>
+                <option value="1-2">1–2 years</option>
+                <option value="2-3" selected>2–3 years</option>
+                <option value="3-5">3–5 years</option>
+                <option value="5+">More than 5 years</option>
+              </select>
+              <input type="hidden" id="s-price" value="65000" />
             </div>
             <div class="nav-btns"><span></span><button class="btn btn-violet" onclick="goStep(2)">Next: Condition →</button></div>
           </div>
 
           <!-- STEP 2 -->
           <div class="step-panel" id="panel2">
-            <h2>What's the condition?</h2>
-            <p class="sub">Honest assessment helps us give the best price.</p>
+            <h2>Detailed Assessment</h2>
+            <p class="sub">Honest answers help us give the most accurate price.</p>
+            
             <div class="form-group mb-3">
-              <label>Overall Condition *</label>
+              <label>Does the laptop turn on? *</label>
+              <div class="checkbox-group" style="gap: 1rem;">
+                <label class="check-chip"><input type="radio" name="s-power" value="yes" checked> <i data-lucide="power"></i> Yes</label>
+                <label class="check-chip"><input type="radio" name="s-power" value="no"> <i data-lucide="power-off"></i> No</label>
+              </div>
+            </div>
+
+            <div class="form-grid mb-3">
+              <div class="form-group">
+                <label>Display Condition *</label>
+                <select class="form-control" id="s-display">
+                  <option value="flawless">Flawless (No scratches/spots)</option>
+                  <option value="scratches">Minor Scratches</option>
+                  <option value="spots">Dead Pixels / Spots</option>
+                  <option value="broken">Broken / Cracked Screen</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Physical Condition *</label>
+                <select class="form-control" id="s-physical">
+                  <option value="flawless">Flawless (Like New)</option>
+                  <option value="scratches">Minor Scratches / Wear</option>
+                  <option value="dents">Dents or Major Scratches</option>
+                  <option value="broken">Broken Hinges / Panel</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label>Are there any hardware issues?</label>
+              <div class="checkbox-group">
+                <label class="check-chip"><input type="checkbox" value="battery" id="hw-battery"> <i data-lucide="battery-warning"></i> Dead Battery</label>
+                <label class="check-chip"><input type="checkbox" value="keyboard" id="hw-keyboard"> <i data-lucide="keyboard"></i> Keyboard Issues</label>
+                <label class="check-chip"><input type="checkbox" value="speakers" id="hw-speakers"> <i data-lucide="speaker"></i> Speaker Issues</label>
+                <label class="check-chip"><input type="checkbox" value="camera" id="hw-camera"> <i data-lucide="camera-off"></i> Camera / Mic Issues</label>
+                <label class="check-chip"><input type="checkbox" value="wifi" id="hw-wifi"> <i data-lucide="wifi-off"></i> Wi-Fi / Bluetooth</label>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label>What accessories do you have?</label>
+              <div class="checkbox-group">
+                <label class="check-chip"><input type="checkbox" value="charger" id="acc-charger" checked> <i data-lucide="plug"></i> Original Charger</label>
+                <label class="check-chip"><input type="checkbox" value="box" id="acc-box"> <i data-lucide="package"></i> Original Box</label>
+                <label class="check-chip"><input type="checkbox" value="bag" id="acc-bag"> <i data-lucide="briefcase"></i> Laptop Bag</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Overall Condition (Legacy) *</label>
               <select class="form-control" id="s-condition">
-                <option value="">Select Condition</option>
                 <option value="like-new">Like New – No scratches, perfect working order</option>
                 <option value="excellent">Excellent – Minor cosmetic wear, fully functional</option>
-                <option value="good">Good – Some scratches, all features work</option>
+                <option value="good" selected>Good – Some scratches, all features work</option>
                 <option value="fair">Fair – Visible wear, minor issues</option>
                 <option value="poor">Poor – Heavy wear, functional issues</option>
               </select>
             </div>
-            <div class="form-group mb-3">
-              <label>What accessories do you have?</label>
-              <div class="checkbox-group">
-                <label class="check-chip"><input type="checkbox" value="charger" id="acc-charger"> 🔌 Original Charger</label>
-                <label class="check-chip"><input type="checkbox" value="box" id="acc-box"> 📦 Original Box</label>
-                <label class="check-chip"><input type="checkbox" value="bag" id="acc-bag"> 💼 Laptop Bag</label>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Additional Notes (optional)</label>
-              <textarea class="form-control" id="s-notes" rows="3" placeholder="Any specific issues, repairs done, etc."></textarea>
-            </div>
+
             <div class="nav-btns">
               <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
               <button class="btn btn-violet" onclick="getEstimate()">Get My Price →</button>
@@ -180,7 +232,7 @@
 
           <!-- STEP 3: QUOTE RESULT -->
           <div class="step-panel" id="panel3">
-            <h2>🎉 Your Estimated Price</h2>
+            <h2><i data-lucide="party-popper"></i> Your Estimated Price</h2>
             <p class="sub">Based on the details provided, here's what we'd offer:</p>
             <div class="estimate-card mb-3" id="estimate-display"></div>
             <div class="nav-btns">
@@ -191,7 +243,7 @@
 
           <!-- STEP 4: SUBMIT -->
           <div class="step-panel" id="panel4">
-            <h2>📅 Schedule Pickup</h2>
+            <h2><i data-lucide="calendar"></i> Schedule Pickup</h2>
             <p class="sub">Fill your contact details and we'll arrange free doorstep pickup.</p>
             <div class="form-grid">
               <div class="form-group">
@@ -217,13 +269,13 @@
             </div>
             <div class="nav-btns">
               <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
-              <button class="btn btn-green" onclick="submitSell()">✅ Confirm Sell Request</button>
+              <button class="btn btn-green" onclick="submitSell()"><i data-lucide="check-circle-2"></i> Confirm Sell Request</button>
             </div>
           </div>
 
           <!-- STEP 5: SUCCESS -->
           <div class="step-panel" id="panel5" style="text-align:center;padding:2rem 0">
-            <div style="font-size:4rem;margin-bottom:1rem">🎊</div>
+            <div style="font-size:4rem;margin-bottom:1rem"><i data-lucide="party-popper"></i></div>
             <h2>Request Submitted!</h2>
             <p style="color:var(--text2);margin:0.75rem 0 2rem">Our team will call you within 24 hours to confirm the pickup. You'll receive payment within 48 hours after inspection.</p>
             <div id="request-details" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;text-align:left"></div>
@@ -258,7 +310,7 @@
     <div class="container">
       <div class="footer-bottom">
         <span>© 2025 Retech Revival. All rights reserved.</span>
-        <span>Made with ♻️ for a sustainable future</span>
+        <span>Made with <i data-lucide="recycle"></i> for a sustainable future</span>
       </div>
     </div>
   </footer>
@@ -267,6 +319,261 @@
   <script>
     let currentStep = 1;
     let estimateResult = null;
+
+    const brandModels = {
+      'Apple': [
+        'MacBook Air M3', 'MacBook Air M2', 'MacBook Air M1', 'MacBook Air (Intel)', 
+        'MacBook Pro 14" (M3)', 'MacBook Pro 16" (M3)', 'MacBook Pro 14" (M2)', 'MacBook Pro 16" (M2)', 
+        'MacBook Pro 14" (M1)', 'MacBook Pro 16" (M1)', 'MacBook Pro 13" M2', 'MacBook Pro 13" M1', 
+        'MacBook Pro 13" (Intel)', 'MacBook Pro 15" (Intel)', 'MacBook Pro 16" (Intel)', 'MacBook 12"'
+      ],
+      'Dell': [
+        'XPS 13', 'XPS 14', 'XPS 15', 'XPS 17', 
+        'Inspiron 13', 'Inspiron 14', 'Inspiron 15', 'Inspiron 16', 
+        'Vostro 14', 'Vostro 15', 'Vostro 16', 
+        'Alienware m15', 'Alienware m17', 'Alienware m18', 'Alienware x14', 'Alienware x15', 'Alienware x17', 
+        'G Series (G3/G5/G15/G16)', 'Latitude 3000 Series', 'Latitude 5000 Series', 'Latitude 7000 Series', 'Latitude 9000 Series', 
+        'Precision Workstation'
+      ],
+      'HP': [
+        'Spectre x360 13', 'Spectre x360 14', 'Spectre x360 15', 'Spectre x360 16', 
+        'Envy 13', 'Envy 14', 'Envy 15', 'Envy 16', 'Envy 17', 'Envy x360', 
+        'Pavilion 14', 'Pavilion 15', 'Pavilion 16', 'Pavilion Aero', 'Pavilion x360', 
+        'OMEN 15', 'OMEN 16', 'OMEN 17', 'OMEN Transcend', 'Victus 15', 'Victus 16', 
+        'EliteBook 800 Series', 'EliteBook 1000 Series', 'Elite Dragonfly', 
+        'ProBook 400 Series', 'ProBook 600 Series', 'HP 14 / HP 15s', 'Chromebook'
+      ],
+      'Lenovo': [
+        'ThinkPad X1 Carbon', 'ThinkPad X1 Yoga', 'ThinkPad X1 Extreme', 'ThinkPad X1 Nano', 
+        'ThinkPad T14 / T14s / T15 / T16', 'ThinkPad E14 / E15 / E16', 'ThinkPad L14 / L15', 'ThinkPad P Series', 
+        'Legion 5 / 5i / 5 Pro', 'Legion 7 / 7i / Slim 7', 'Legion 9i', 'Legion Y530/Y540', 
+        'LOQ Series', 'IdeaPad Gaming 3', 
+        'Yoga 6', 'Yoga 7 / 7i', 'Yoga 9i', 'Yoga Slim 7 / Slim 7i', 'Yoga Book', 
+        'IdeaPad Slim 3', 'IdeaPad Slim 5', 'IdeaPad Slim 7', 'IdeaPad Flex 5', 
+        'ThinkBook 13s', 'ThinkBook 14', 'ThinkBook 15', 'ThinkBook 16', 'Chromebook'
+      ],
+      'ASUS': [
+        'ROG Zephyrus G14', 'ROG Zephyrus G15', 'ROG Zephyrus G16', 'ROG Zephyrus M16', 'ROG Zephyrus Duo', 
+        'ROG Strix G15', 'ROG Strix G17', 'ROG Strix G18', 'ROG Strix SCAR Series', 
+        'TUF Gaming A15', 'TUF Gaming A17', 'TUF Gaming F15', 'TUF Gaming F17', 'TUF Dash F15', 
+        'ZenBook 13', 'ZenBook 14 / 14 OLED', 'ZenBook 14X', 'ZenBook Pro Duo', 'ZenBook Flip', 
+        'VivoBook 14', 'VivoBook 15', 'VivoBook 16 / 16X', 'VivoBook Pro', 'VivoBook S', 'VivoBook Flip', 
+        'ExpertBook B1 / B3', 'ExpertBook B5 / B9', 'ProArt StudioBook', 'Chromebook'
+      ],
+      'Acer': [
+        'Predator Helios 300', 'Predator Helios 500', 'Predator Helios Neo', 'Predator Triton 300', 'Predator Triton 500', 
+        'Nitro 5', 'Nitro 16', 'Nitro 17', 'Nitro V', 
+        'Swift 3', 'Swift 5', 'Swift 14', 'Swift X', 'Swift Edge', 
+        'Aspire 3', 'Aspire 5', 'Aspire 7', 'Spin 3', 'Spin 5', 
+        'ConceptD Series', 'Extensa', 'TravelMate', 'Chromebook'
+      ],
+      'Microsoft': [
+        'Surface Pro 11', 'Surface Pro 10', 'Surface Pro 9', 'Surface Pro 8', 'Surface Pro 7 / 7+', 'Surface Pro 6', 
+        'Surface Laptop 7', 'Surface Laptop 6', 'Surface Laptop 5', 'Surface Laptop 4', 'Surface Laptop 3', 'Surface Laptop 2', 
+        'Surface Laptop Studio 2', 'Surface Laptop Studio', 'Surface Book 3', 'Surface Book 2', 
+        'Surface Laptop Go 3', 'Surface Laptop Go 2', 'Surface Laptop Go', 
+        'Surface Go 4', 'Surface Go 3', 'Surface Go 2', 'Surface Go'
+      ],
+      'Samsung': [
+        'Galaxy Book4 Ultra', 'Galaxy Book4 Pro 360', 'Galaxy Book4 Pro', 'Galaxy Book4', 
+        'Galaxy Book3 Ultra', 'Galaxy Book3 Pro 360', 'Galaxy Book3 Pro', 'Galaxy Book3', 
+        'Galaxy Book2 Pro 360', 'Galaxy Book2 Pro', 'Galaxy Book2', 'Galaxy Book Go'
+      ],
+      'MSI': [
+        'Stealth (14/15/16/17/GS66)', 'Raider (GE66/GE76/GE78)', 'Titan (GT77)', 'Vector (GP66/GP76)', 
+        'Katana (15/17/GF66/GF76)', 'Sword / Crosshair', 'Pulse / GL66', 'GF63 / GF65 Thin', 
+        'Cyborg 15', 'Alpha / Bravo / Delta', 
+        'Summit (E13/E14/E16)', 'Prestige (13/14/15/16)', 'Modern (14/15)'
+      ],
+      'Xiaomi / Redmi': [
+        'Xiaomi NoteBook Pro 120G', 'Mi NoteBook Ultra', 'Mi NoteBook Pro', 'Mi NoteBook 14', 
+        'RedmiBook Pro', 'RedmiBook 15', 'RedmiBook e-Learning Edition'
+      ],
+      'Realme': [
+        'Realme Book Prime', 'Realme Book (Slim)'
+      ],
+      'Honor': [
+        'MagicBook X14', 'MagicBook X15', 'MagicBook X16', 'MagicBook 14', 'MagicBook 15'
+      ],
+      'Infinix': [
+        'Zero Book Ultra', 'Zero Book', 'INBook Y1 Plus', 'INBook X2 Plus', 'INBook X2', 'INBook X1 Pro', 'INBook X1'
+      ],
+      'LG': [
+        'LG Gram 17', 'LG Gram 16', 'LG Gram 15', 'LG Gram 14'
+      ],
+      'Razer': [
+        'Razer Blade 18', 'Razer Blade 17', 'Razer Blade 16', 'Razer Blade 15', 'Razer Blade 14', 'Razer Blade Stealth 13'
+      ],
+      'Gigabyte': [
+        'Aorus 17', 'Aorus 15', 'Aero 17', 'Aero 16', 'Aero 15', 'G7', 'G5'
+      ],
+      'Vaio': [
+        'Vaio Z', 'Vaio SE14', 'Vaio E15'
+      ],
+      'Fujitsu': [
+        'Fujitsu UH-X'
+      ],
+      'Other': [
+        'Other Custom/Unlisted Model'
+      ]
+    };
+
+    document.getElementById('s-brand').addEventListener('change', function() {
+      const brand = this.value;
+      const modelSelect = document.getElementById('s-model');
+      
+      if (brand && brandModels[brand]) {
+        modelSelect.innerHTML = '<option value="">Select Model</option>';
+        brandModels[brand].forEach(model => {
+          const option = document.createElement('option');
+          option.value = model;
+          option.textContent = model;
+          modelSelect.appendChild(option);
+        });
+      } else {
+        modelSelect.innerHTML = '<option value="">Select Brand First</option>';
+        document.getElementById('s-price').value = '';
+      }
+    });
+
+    function getEstimatedMSRP(model) {
+      model = model.toLowerCase();
+      // High-End Apple
+      if (model.includes('m3 max')) return 349000;
+      if (model.includes('m2 max')) return 309000;
+      if (model.includes('m1 max')) return 299000;
+      if (model.includes('m3 pro')) return 229000;
+      if (model.includes('m2 pro')) return 199000;
+      if (model.includes('m1 pro')) return 189000;
+      if (model.includes('pro 16" (intel)')) return 239000;
+      if (model.includes('pro 15" (intel)')) return 199000;
+      if (model.includes('pro 14" (m3)')) return 169000;
+      if (model.includes('pro 13" m2')) return 129000;
+      if (model.includes('pro 13" m1')) return 112000;
+      if (model.includes('pro 13" (intel)')) return 109000;
+      if (model.includes('air m3')) return 114000;
+      if (model.includes('air m2')) return 114000;
+      if (model.includes('air m1')) return 92000;
+      if (model.includes('air (intel)')) return 85000;
+      if (model.includes('macbook 12')) return 99000;
+
+      // Premium Gaming & Workstations
+      if (model.includes('alienware m18') || model.includes('alienware x17')) return 280000;
+      if (model.includes('alienware')) return 220000;
+      if (model.includes('razer blade 18') || model.includes('razer blade 17')) return 320000;
+      if (model.includes('razer blade 16') || model.includes('razer blade 15')) return 260000;
+      if (model.includes('rog zephyrus duo')) return 320000;
+      if (model.includes('titan')) return 380000;
+      if (model.includes('stealth')) return 190000;
+      if (model.includes('legion 9i')) return 310000;
+      if (model.includes('legion 7') || model.includes('legion slim 7')) return 180000;
+      if (model.includes('predator helios 500')) return 240000;
+      if (model.includes('galaxy book4 ultra')) return 240000;
+      if (model.includes('galaxy book3 ultra')) return 210000;
+
+      // Premium Ultrabooks
+      if (model.includes('xps 17') || model.includes('xps 15')) return 190000;
+      if (model.includes('xps 14') || model.includes('xps 13')) return 145000;
+      if (model.includes('spectre')) return 135000;
+      if (model.includes('thinkpad x1')) return 165000;
+      if (model.includes('surface laptop studio')) return 175000;
+      if (model.includes('surface book')) return 155000;
+      if (model.includes('lg gram 17')) return 140000;
+      if (model.includes('lg gram')) return 110000;
+
+      // Mid-High Tier
+      if (model.includes('rog zephyrus')) return 150000;
+      if (model.includes('rog strix')) return 140000;
+      if (model.includes('predator')) return 125000;
+      if (model.includes('legion 5')) return 115000;
+      if (model.includes('omen')) return 120000;
+      if (model.includes('envy')) return 98000;
+      if (model.includes('zenbook pro')) return 130000;
+      if (model.includes('zenbook')) return 92000;
+      if (model.includes('swift 14') || model.includes('swift x')) return 88000;
+      if (model.includes('thinkpad t')) return 115000;
+      if (model.includes('surface pro')) return 105000;
+      if (model.includes('surface laptop')) return 98000;
+      if (model.includes('galaxy book') && model.includes('pro')) return 120000;
+
+      // Entry Gaming & Budget
+      if (model.includes('tuf') || model.includes('nitro') || model.includes('loq') || model.includes('victus') || model.includes('ideapad gaming') || model.includes('g series') || model.includes('katana') || model.includes('cyborg')) return 78000;
+      if (model.includes('pavilion')) return 62000;
+      if (model.includes('inspiron') || model.includes('vostro')) return 58000;
+      if (model.includes('ideapad slim 7') || model.includes('ideapad flex')) return 68000;
+      if (model.includes('ideapad')) return 52000;
+      if (model.includes('vivobook pro')) return 75000;
+      if (model.includes('vivobook')) return 55000;
+      if (model.includes('aspire')) return 48000;
+      if (model.includes('thinkbook')) return 65000;
+      if (model.includes('magicbook') || model.includes('redmibook') || model.includes('realme book')) return 46000;
+      if (model.includes('inbook') || model.includes('mi notebook')) return 42000;
+      if (model.includes('chromebook')) return 26000;
+
+      // Fallback Average
+      return 65000;
+    }
+
+    function isGamingOrProLaptop(model) {
+      if (!model) return false;
+      const m = model.toLowerCase();
+      // Keywords for gaming laptops, creator laptops, or workstations that typically have dGPUs
+      const gamingProKeywords = [
+        'alienware', 'rog', 'legion', 'tuf', 'nitro', 'predator', 'omen', 'victus', 
+        'loq', 'katana', 'blade', 'stealth', 'titan', 'raider', 'vector', 'sword', 
+        'crosshair', 'pulse', 'cyborg', 'aero', 'aorus', 'g series', 'ideapad gaming', 
+        'xps 15', 'xps 17', 'conceptd', 'studiobook', 'precision', 'envy 15', 'envy 16'
+      ];
+      return gamingProKeywords.some(keyword => m.includes(keyword)) || m.includes('macbook pro 16') || (m.includes('macbook pro 14') && m.includes('max'));
+    }
+
+    function updateEstimatedPrice() {
+      const model = document.getElementById('s-model').value;
+      const gpuContainer = document.getElementById('gpu-container');
+      const gpuSelect = document.getElementById('s-gpu');
+
+      if (!model || model === 'Other Custom/Unlisted Model') {
+        document.getElementById('s-price').value = '';
+        gpuContainer.style.display = 'none';
+        gpuSelect.value = '';
+        return;
+      }
+
+      // Check if it's a gaming/pro laptop to show GPU dropdown
+      if (isGamingOrProLaptop(model)) {
+        gpuContainer.style.display = 'block';
+      } else {
+        gpuContainer.style.display = 'none';
+        gpuSelect.value = ''; // reset if hidden
+      }
+      
+      let price = getEstimatedMSRP(model);
+      
+      const ram = document.getElementById('s-ram').value;
+      const storage = document.getElementById('s-storage').value;
+      const gpu = gpuSelect.value;
+
+      // Price Adjustments for Upgrades
+      if (ram === '16' && price < 100000) price += 6000;
+      else if (ram === '32') price += 18000;
+      else if (ram === '64') price += 40000;
+
+      if (storage === '1000') price += 10000;
+      else if (storage === '2000') price += 25000;
+
+      if (gpu === 'entry') price += 12000;
+      else if (gpu === 'mid') price += 35000;
+      else if (gpu === 'high') price += 75000;
+      else if (gpu === 'ultra') price += 140000;
+      else if (gpu === 'mac_pro') price += 45000;
+
+      document.getElementById('s-price').value = price;
+    }
+
+    document.getElementById('s-model').addEventListener('change', updateEstimatedPrice);
+    document.getElementById('s-ram').addEventListener('change', updateEstimatedPrice);
+    document.getElementById('s-storage').addEventListener('change', updateEstimatedPrice);
+    document.getElementById('s-gpu').addEventListener('change', updateEstimatedPrice);
 
     // Set min date for pickup to tomorrow
     const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
@@ -297,8 +604,23 @@
       if (document.getElementById('acc-box').checked)     accessories.push('box');
       if (document.getElementById('acc-bag').checked)     accessories.push('bag');
 
+      const issues = [];
+      if (document.getElementById('hw-battery').checked) issues.push('battery');
+      if (document.getElementById('hw-keyboard').checked) issues.push('keyboard');
+      if (document.getElementById('hw-speakers').checked) issues.push('speakers');
+      if (document.getElementById('hw-camera').checked) issues.push('camera');
+      if (document.getElementById('hw-wifi').checked) issues.push('wifi');
+
+      const detailedCondition = {
+        power: document.querySelector('input[name="s-power"]:checked').value,
+        display: document.getElementById('s-display').value,
+        physical: document.getElementById('s-physical').value,
+        issues: issues
+      };
+
       const body = {
         brand, purchasePrice: price, condition: cond,
+        detailedCondition: detailedCondition,
         ram: document.getElementById('s-ram').value,
         storage: document.getElementById('s-storage').value,
         age: document.getElementById('s-age').value,
@@ -362,5 +684,6 @@
       } catch { showToast('Failed to submit. Please try again.','error'); }
     }
   </script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>
