@@ -292,19 +292,101 @@ footer {
 .hidden { display: none !important; }
 
 /* ── Responsive ────────────────────────────────────────────── */
+
+/* ─ Mobile Nav Dropdown ───────────────────────────────────── */
 @media (max-width: 900px) {
-  .nav-links { display: none; }
+  .nav-links {
+    display: none;
+    position: fixed;
+    top: 68px;
+    left: 0; right: 0;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    gap: 0.25rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    z-index: 999;
+    animation: mobileNavSlide 0.25s ease forwards;
+  }
+  .nav-links.open { display: flex; }
+  @keyframes mobileNavSlide {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .nav-links a {
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 1rem;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    background: rgba(16,185,129,0.1);
+  }
   .hamburger { display: flex; }
+
+  /* Hide Login/Signup text on tablet, keep cart compact */
+  #nav-login-btn, #nav-signup-btn { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
+  .cart-btn { padding: 0.4rem 0.7rem; font-size: 0.82rem; }
+
+  /* Grids */
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
   .grid-4 { grid-template-columns: repeat(2,1fr); }
   .grid-3 { grid-template-columns: repeat(2,1fr); }
+
+  /* Sell page form grid */
+  .form-grid { grid-template-columns: 1fr !important; }
 }
+
 @media (max-width: 600px) {
+  /* Navbar */
+  .navbar { padding: 0 1rem; }
+  .nav-logo { font-size: 1.1rem; }
+  .nav-logo > div > span:last-child { display: none; } /* hide tagline on small phones */
+  #nav-login-btn, #nav-signup-btn { display: none; }
+  .nav-actions { gap: 0.4rem; }
+
+  /* Nav user menu stacking */
+  #nav-user-menu { flex-direction: column !important; gap: 0.25rem !important; align-items: flex-end !important; }
+  #nav-user-menu span { font-size: 0.78rem !important; }
+
+  /* Grids */
   .footer-grid { grid-template-columns: 1fr; }
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-  .section { padding: 3rem 0; }
-  .section-title { font-size: 1.7rem; }
-  .footer-bottom { flex-direction: column; gap: 0.5rem; }
+  .section { padding: 2.5rem 0; }
+  .section-title { font-size: 1.5rem; }
+  .section-sub { font-size: 0.92rem; }
+  .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+  .container { padding: 0 1rem; }
+
+  /* Page header */
+  .page-header { padding: 2rem 0; }
+  .page-header h1 { font-size: 1.5rem; }
+
+  /* Cart items: stack vertically */
+  .cart-item { flex-direction: column; align-items: stretch !important; gap: 0.75rem; }
+  .cart-item-icon { width: 100%; height: 140px; }
+  .cart-item > div:last-child { flex-direction: row !important; align-items: center !important; justify-content: space-between; }
+
+  /* Product action buttons stack */
+  .action-btns { flex-direction: column; }
+
+  /* Toast */
+  #toast-container { left: 1rem; right: 1rem; bottom: 1rem; }
+  .toast { min-width: unset; width: 100%; }
+
+  /* Sell wizard steps */
+  .wizard-steps { gap: 0; }
+  .wstep { font-size: 0.68rem; padding: 0.5rem 0.25rem; }
+
+  /* Auth cards */
+  .auth-card { padding: 1.5rem; margin: 0 0.5rem; }
+  .form-row { grid-template-columns: 1fr !important; }
+
+  /* Modal */
+  .modal { margin: 0 0.75rem; padding: 1.5rem; }
+
+  /* Fix product page rental grid */
+  .specs-grid { grid-template-columns: 1fr !important; }
 }
 
 /* ── Crazy Next-Level Animations ───────────────────────────── */

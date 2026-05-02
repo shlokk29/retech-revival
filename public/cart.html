@@ -242,10 +242,7 @@
       } catch { showToast('Failed to place order. Try again.', 'error'); }
     }
 
-    function toggleMenu() {
-      const navLinks = document.getElementById('nav-links');
-      if(navLinks) navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-    }
+    // toggleMenu is defined globally in main.js
 
     loadCart();
   </script>

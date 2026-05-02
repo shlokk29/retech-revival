@@ -302,10 +302,7 @@
       addToCart(id, name, price, brand, condition, image, 'rent', duration);
     }
 
-    function toggleMenu() {
-      const navLinks = document.getElementById('nav-links');
-      if(navLinks) navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-    }
+    // toggleMenu is defined globally in main.js
 
     // ── Reviews Logic ──────────────────────────────
     let selectedRating = 0;

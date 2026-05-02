@@ -248,6 +248,32 @@ function closeAuthModal() {
   }
 }
 
+// ── Mobile Nav Toggle (global) ────────────────────────────────
+function toggleMenu() {
+  const navLinks = document.getElementById('nav-links');
+  if (!navLinks) return;
+  navLinks.classList.toggle('open');
+  // Close menu when clicking outside
+  if (navLinks.classList.contains('open')) {
+    setTimeout(() => {
+      document.addEventListener('click', function closeNav(e) {
+        if (!navLinks.contains(e.target) && !e.target.closest('.hamburger')) {
+          navLinks.classList.remove('open');
+          document.removeEventListener('click', closeNav);
+        }
+      });
+    }, 10);
+  }
+}
+
+// Close mobile nav on link click
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    const navLinks = document.getElementById('nav-links');
+    if (navLinks) navLinks.classList.remove('open');
+  });
+});
+
 // Init
 loadAuthState();
 updateCartCount();
