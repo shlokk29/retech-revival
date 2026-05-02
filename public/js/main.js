@@ -1,3 +1,10 @@
+// ── Apply theme before paint (prevents FOUC) ─────────────────
+(function () {
+  if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.dataset.theme = 'dark';
+  }
+})();
+
 // ── Global JS: Navbar, Auth State, Toast, Cart Count ─────────
 
 // Navbar scroll effect
@@ -99,13 +106,18 @@ async function updateCartCount() {
   } catch { }
 }
 
-// ── Add to cart ───────────────────────────────────────────────
-async function addToCart(productId, name, price, brand, condition) {
+// ── Add to cart (auth-gated) ──────────────────────────────────
+async function addToCart(productId, name, price, brand, condition, image, type = 'buy', duration = null) {
+  // Block if not logged in — show sign-in modal
+  if (!currentUser) {
+    showAuthRequiredModal();
+    return;
+  }
   try {
     const r = await fetch('/api/cart/add', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ productId, name, price, brand, condition })
+      body: JSON.stringify({ productId, name, price, brand, condition, image: image || '', type, duration })
     });
     const data = await r.json();
     if (data.success) {
@@ -116,6 +128,123 @@ async function addToCart(productId, name, price, brand, condition) {
     }
   } catch {
     showToast('Network error. Please try again.', 'error');
+  }
+}
+
+// ── Auth-Required Modal ───────────────────────────────────────
+function showAuthRequiredModal() {
+  // Don't stack multiples
+  if (document.getElementById('auth-required-modal')) return;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'auth-required-modal';
+  overlay.style.cssText = `
+    position:fixed; inset:0; z-index:50000;
+    background:rgba(0,0,0,0.65); backdrop-filter:blur(8px);
+    display:flex; align-items:center; justify-content:center;
+    animation: authModalFadeIn 0.3s ease forwards;
+  `;
+
+  overlay.innerHTML = `
+    <style>
+      @keyframes authModalFadeIn { from{opacity:0} to{opacity:1} }
+      @keyframes authModalSlideUp { from{opacity:0;transform:translateY(32px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+      @keyframes authModalShake { 0%,100%{transform:translateX(0)} 15%{transform:translateX(-6px)} 30%{transform:translateX(6px)} 45%{transform:translateX(-4px)} 60%{transform:translateX(4px)} 75%{transform:translateX(-2px)} }
+      .auth-modal-card {
+        background:var(--bg2); border:1px solid var(--border); border-radius:24px;
+        padding:2.5rem 2rem; width:100%; max-width:420px; position:relative;
+        box-shadow: 0 32px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
+        animation: authModalSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+        text-align:center;
+      }
+      .auth-modal-icon {
+        width:72px; height:72px; border-radius:50%; margin:0 auto 1.25rem;
+        background: linear-gradient(135deg, rgba(15,40,71,0.15), rgba(16,185,129,0.1));
+        display:flex; align-items:center; justify-content:center;
+        font-size:2rem;
+        animation: authModalShake 0.6s ease 0.4s;
+      }
+      .auth-modal-card h2 { font-size:1.4rem; font-weight:800; margin-bottom:0.5rem; color:var(--text); }
+      .auth-modal-card p  { font-size:0.92rem; color:var(--text2); line-height:1.6; margin-bottom:1.75rem; }
+      .auth-modal-btns { display:flex; flex-direction:column; gap:0.65rem; }
+      .auth-modal-btns a, .auth-modal-btns button {
+        display:flex; align-items:center; justify-content:center; gap:0.5rem;
+        padding:0.85rem 1.5rem; border-radius:12px; font-size:0.95rem;
+        font-weight:600; font-family:inherit; cursor:pointer;
+        transition: all 0.25s; text-decoration:none; border:none;
+      }
+      .auth-modal-login {
+        background: linear-gradient(135deg, var(--primary), #0a1628);
+        color:white; box-shadow: 0 4px 20px rgba(15,40,71,0.4);
+        position:relative; overflow:hidden;
+      }
+      .auth-modal-login:hover { transform:translateY(-2px); box-shadow: 0 8px 30px rgba(15,40,71,0.55); }
+      .auth-modal-login::after {
+        content:''; position:absolute; top:0; left:-100%; width:50%; height:100%;
+        background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+        transform:skewX(-20deg); animation: shimmer 3s infinite;
+      }
+      .auth-modal-signup {
+        background:var(--bg3); border:1px solid var(--border); color:var(--text);
+      }
+      .auth-modal-signup:hover { border-color:var(--primary); color:var(--primary); transform:translateY(-1px); }
+      .auth-modal-close {
+        position:absolute; top:16px; right:16px;
+        background:var(--bg3); border:1px solid var(--border);
+        color:var(--text2); width:32px; height:32px;
+        border-radius:50%; display:flex; align-items:center; justify-content:center;
+        cursor:pointer; font-size:1.1rem; transition:all 0.2s;
+      }
+      .auth-modal-close:hover { background:rgba(244,63,94,0.1); color:var(--red); border-color:rgba(244,63,94,0.3); transform:rotate(90deg); }
+      .auth-modal-perks { display:flex; justify-content:center; gap:1.5rem; margin-bottom:1.5rem; }
+      .auth-modal-perk { display:flex; flex-direction:column; align-items:center; gap:0.3rem; font-size:0.75rem; color:var(--text2); }
+      .auth-modal-perk span:first-child { font-size:1.2rem; }
+      .auth-modal-skip { background:none!important; border:none!important; color:var(--text3)!important; font-size:0.82rem!important; padding:0.5rem!important; }
+      .auth-modal-skip:hover { color:var(--text2)!important; text-decoration:underline; transform:none!important; }
+    </style>
+    <div class="auth-modal-card">
+      <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="Close">✕</button>
+      <div class="auth-modal-icon">🔒</div>
+      <h2>Sign In Required</h2>
+      <p>Create a free account or log in to add items to your cart, track orders, and enjoy a personalized experience.</p>
+      <div class="auth-modal-perks">
+        <div class="auth-modal-perk"><span>🛡️</span> Warranty</div>
+        <div class="auth-modal-perk"><span>📦</span> Free Delivery</div>
+        <div class="auth-modal-perk"><span>🔄</span> 30-Day Returns</div>
+      </div>
+      <div class="auth-modal-btns">
+        <a href="/login.html" class="auth-modal-login">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Log In
+        </a>
+        <a href="/signup.html" class="auth-modal-signup">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          Create Free Account
+        </a>
+        <button class="auth-modal-skip" onclick="closeAuthModal()">Continue browsing</button>
+      </div>
+    </div>
+  `;
+
+  // Close on overlay click (outside card)
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeAuthModal();
+  });
+
+  // Close on Escape key
+  const escHandler = (e) => {
+    if (e.key === 'Escape') { closeAuthModal(); document.removeEventListener('keydown', escHandler); }
+  };
+  document.addEventListener('keydown', escHandler);
+
+  document.body.appendChild(overlay);
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById('auth-required-modal');
+  if (modal) {
+    modal.style.animation = 'authModalFadeIn 0.2s ease reverse forwards';
+    setTimeout(() => modal.remove(), 200);
   }
 }
 
@@ -159,3 +288,18 @@ if (document.readyState === 'loading') {
 } else {
   initTheme();
 }
+
+// ── AI Chatbot Auto-loader ────────────────────────────────────
+(function loadChatbot() {
+  // Inject chatbot CSS
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'css/chatbot.css';
+  document.head.appendChild(link);
+
+  // Inject chatbot JS
+  const script = document.createElement('script');
+  script.src = 'js/chatbot.js';
+  script.defer = true;
+  document.body.appendChild(script);
+})();

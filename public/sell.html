@@ -4,6 +4,7 @@
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sell Your Laptop – Get Instant Quote | Retech Revival</title>
   <meta name="description" content="Get an instant price estimate for your old laptop. We pick it up for free and pay you within 48 hours." />
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark';</script>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     .lucide { width: 1em; height: 1em; vertical-align: middle; }
@@ -32,12 +33,12 @@
       background: var(--bg3); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;
     }
     .check-chip input { width: 14px; height: 14px; accent-color: var(--primary); }
-    .check-chip:has(input:checked) { background: rgba(108,99,255,0.15); border-color: var(--primary); color: var(--primary); }
+    .check-chip:has(input:checked) { background: rgba(15,40,71,0.15); border-color: var(--primary); color: var(--primary); }
     .nav-btns { display: flex; justify-content: space-between; margin-top: 1.5rem; }
     /* Estimate result */
     .estimate-card {
-      background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(34,211,238,0.08));
-      border: 1px solid rgba(108,99,255,0.3); border-radius: var(--radius); padding: 2rem; text-align: center;
+      background: linear-gradient(135deg, rgba(15,40,71,0.15), rgba(16,185,129,0.08));
+      border: 1px solid rgba(15,40,71,0.3); border-radius: var(--radius); padding: 2rem; text-align: center;
     }
     .estimate-range { font-size: 2rem; font-weight: 900; color: var(--primary); }
     .breakdown-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
@@ -47,7 +48,7 @@
     .info-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
     .info-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
     .info-step { display: flex; gap: 1rem; margin-bottom: 0.75rem; align-items: flex-start; }
-    .info-step .num { width: 28px; height: 28px; border-radius: 50%; background: rgba(108,99,255,0.15); color: var(--primary); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem; }
+    .info-step .num { width: 28px; height: 28px; border-radius: 50%; background: rgba(15,40,71,0.15); color: var(--primary); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem; }
     .info-step div h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.15rem; }
     .info-step div p  { font-size: 0.8rem; color: var(--text2); margin: 0; }
     @media (max-width: 900px) { .sell-layout { grid-template-columns: 1fr; } .sell-info { display: none; } }
@@ -56,10 +57,16 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-logo"><div class="logo-icon"><i data-lucide="recycle"></i></div><span>Retech Revival</span></a>
-    <div class="nav-links">
+    <a href="/" class="nav-logo">
+      <img src="img/logo.png" alt="Retech Revival Logo" style="width:36px;height:36px;border-radius:8px;object-fit:cover;">
+      <div>
+        <span style="display:block;font-weight:800;letter-spacing:-0.02em;">Retech Revival</span>
+        <span style="display:block;font-size:0.62rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;margin-top:-2px;">Tech Reborn. Value Restored.</span>
+      </div>
+    </a>
+    <div class="nav-links" id="nav-links">
       <a href="/">Home</a><a href="/catalog.html">Buy</a>
-      <a href="/sell.html" class="active">Sell</a><a href="/about.html">About</a>
+      <a href="/sell.html" class="active">Sell</a><a href="/subscribe.html">Subscribe</a><a href="/about.html">About</a>
     </div>
     <div class="nav-actions">
       <a href="/cart.html" class="cart-btn"><i data-lucide="shopping-cart"></i> Cart<span class="cart-count" id="cart-count-badge">0</span></a>
@@ -69,6 +76,7 @@
         <span style="font-size:0.9rem;color:var(--text2)">Hi, <strong id="nav-user-name"></strong></span>
         <button onclick="logout()" class="btn-outline" style="padding:0.4rem 0.8rem;font-size:0.85rem">Logout</button>
       </div>
+      <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
     </div>
   </nav>
 
@@ -133,6 +141,12 @@
                   <option value="512">512 GB</option><option value="1000">1 TB</option><option value="2000">2 TB</option>
                 </select>
               </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label>Processor *</label>
+              <select class="form-control" id="s-processor">
+                <option value="">Select Brand First</option>
+              </select>
             </div>
             <div class="form-group" id="gpu-container" style="display: none; margin-bottom: 1rem;">
               <label>Dedicated GPU (dGPU)</label>
@@ -289,7 +303,7 @@
             <h3>How Selling Works</h3>
             <div class="info-step"><div class="num">1</div><div><h4>Get Instant Quote</h4><p>Fill our form and get a price estimate in 2 minutes, no obligations.</p></div></div>
             <div class="info-step"><div class="num">2</div><div><h4>Free Doorstep Pickup</h4><p>Schedule a convenient time and our agent picks up the device for free.</p></div></div>
-            <div class="info-step"><div class="num">3</div><div><h4>Quick Inspection</h4><p>Our engineers verify the device condition on the spot.</p></div></div>
+            <div class="info-step"><div class="num">3</div><div><h4>On-Site Verification</h4><p>Our pickup agent will thoroughly verify all device details — processor, RAM, storage, condition, and accessories — right at your doorstep before confirming the final price.</p></div></div>
             <div class="info-step"><div class="num">4</div><div><h4>Instant Payment</h4><p>Get paid directly to your bank account within 48 hours.</p></div></div>
           </div>
           <div class="info-card">
@@ -299,6 +313,7 @@
               <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>100% free doorstep pickup across India</span></div>
               <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>Payment in 48 hours — no delays</span></div>
               <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>Safe & secure data wipe certified</span></div>
+              <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>On-site verification — our agent checks all specs before final price</span></div>
               <div class="flex gap-2" style="font-size:0.88rem"><span class="text-green">✓</span><span>All brands & conditions accepted</span></div>
             </div>
           </div>
@@ -309,7 +324,7 @@
   <footer>
     <div class="container">
       <div class="footer-bottom">
-        <span>© 2025 Retech Revival. All rights reserved.</span>
+        <span>© 2026 Retech Revival. All rights reserved.</span>
         <span>Made with <i data-lucide="recycle"></i> for a sustainable future</span>
       </div>
     </div>
@@ -418,10 +433,159 @@
       ]
     };
 
+    // Processor options per brand
+    const brandProcessors = {
+      'Apple': [
+        { value: 'm1', label: 'Apple M1' },
+        { value: 'm1_pro', label: 'Apple M1 Pro' },
+        { value: 'm1_max', label: 'Apple M1 Max' },
+        { value: 'm2', label: 'Apple M2' },
+        { value: 'm2_pro', label: 'Apple M2 Pro' },
+        { value: 'm2_max', label: 'Apple M2 Max' },
+        { value: 'm3', label: 'Apple M3' },
+        { value: 'm3_pro', label: 'Apple M3 Pro' },
+        { value: 'm3_max', label: 'Apple M3 Max' },
+      ],
+      'Dell': [
+        { value: 'celeron', label: 'Intel Celeron' },
+        { value: 'i3', label: 'Intel Core i3' },
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i9', label: 'Intel Core i9' },
+        { value: 'i5_ultra', label: 'Intel Core Ultra 5' },
+        { value: 'i7_ultra', label: 'Intel Core Ultra 7' },
+        { value: 'i9_ultra', label: 'Intel Core Ultra 9' },
+        { value: 'r5', label: 'AMD Ryzen 5' },
+        { value: 'r7', label: 'AMD Ryzen 7' },
+      ],
+      'HP': [
+        { value: 'celeron', label: 'Intel Celeron' },
+        { value: 'pentium', label: 'Intel Pentium' },
+        { value: 'i3', label: 'Intel Core i3' },
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i9', label: 'Intel Core i9' },
+        { value: 'i5_ultra', label: 'Intel Core Ultra 5' },
+        { value: 'i7_ultra', label: 'Intel Core Ultra 7' },
+        { value: 'r3', label: 'AMD Ryzen 3' },
+        { value: 'r5', label: 'AMD Ryzen 5' },
+        { value: 'r7', label: 'AMD Ryzen 7' },
+        { value: 'r9', label: 'AMD Ryzen 9' },
+      ],
+      'Lenovo': [
+        { value: 'celeron', label: 'Intel Celeron' },
+        { value: 'pentium', label: 'Intel Pentium' },
+        { value: 'i3', label: 'Intel Core i3' },
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i9', label: 'Intel Core i9' },
+        { value: 'i5_ultra', label: 'Intel Core Ultra 5' },
+        { value: 'i7_ultra', label: 'Intel Core Ultra 7' },
+        { value: 'i9_ultra', label: 'Intel Core Ultra 9' },
+        { value: 'r3', label: 'AMD Ryzen 3' },
+        { value: 'r5', label: 'AMD Ryzen 5' },
+        { value: 'r7', label: 'AMD Ryzen 7' },
+        { value: 'r9', label: 'AMD Ryzen 9' },
+      ],
+      'ASUS': [
+        { value: 'celeron', label: 'Intel Celeron' },
+        { value: 'i3', label: 'Intel Core i3' },
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i9', label: 'Intel Core i9' },
+        { value: 'i7_ultra', label: 'Intel Core Ultra 7' },
+        { value: 'i9_ultra', label: 'Intel Core Ultra 9' },
+        { value: 'r5', label: 'AMD Ryzen 5' },
+        { value: 'r7', label: 'AMD Ryzen 7' },
+        { value: 'r9', label: 'AMD Ryzen 9' },
+      ],
+      'Acer': [
+        { value: 'celeron', label: 'Intel Celeron' },
+        { value: 'pentium', label: 'Intel Pentium' },
+        { value: 'i3', label: 'Intel Core i3' },
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i9', label: 'Intel Core i9' },
+        { value: 'r3', label: 'AMD Ryzen 3' },
+        { value: 'r5', label: 'AMD Ryzen 5' },
+        { value: 'r7', label: 'AMD Ryzen 7' },
+        { value: 'r9', label: 'AMD Ryzen 9' },
+      ],
+      'Microsoft': [
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i5_ultra', label: 'Intel Core Ultra 5' },
+        { value: 'i7_ultra', label: 'Intel Core Ultra 7' },
+        { value: 'snapdragon', label: 'Qualcomm Snapdragon' },
+      ],
+      'Samsung': [
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i9', label: 'Intel Core i9' },
+        { value: 'i7_ultra', label: 'Intel Core Ultra 7' },
+        { value: 'snapdragon', label: 'Qualcomm Snapdragon' },
+      ],
+      'MSI': [
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i9', label: 'Intel Core i9' },
+        { value: 'i7_ultra', label: 'Intel Core Ultra 7' },
+        { value: 'i9_ultra', label: 'Intel Core Ultra 9' },
+        { value: 'r7', label: 'AMD Ryzen 7' },
+        { value: 'r9', label: 'AMD Ryzen 9' },
+      ],
+      'Razer': [
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i9', label: 'Intel Core i9' },
+        { value: 'i7_ultra', label: 'Intel Core Ultra 7' },
+        { value: 'i9_ultra', label: 'Intel Core Ultra 9' },
+      ],
+      'Gigabyte': [
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i9', label: 'Intel Core i9' },
+        { value: 'r7', label: 'AMD Ryzen 7' },
+        { value: 'r9', label: 'AMD Ryzen 9' },
+      ],
+      'LG': [
+        { value: 'i5', label: 'Intel Core i5' },
+        { value: 'i7', label: 'Intel Core i7' },
+        { value: 'i5_ultra', label: 'Intel Core Ultra 5' },
+        { value: 'i7_ultra', label: 'Intel Core Ultra 7' },
+      ],
+    };
+    // Default processors for unlisted brands
+    const defaultProcessors = [
+      { value: 'celeron', label: 'Intel Celeron' },
+      { value: 'pentium', label: 'Intel Pentium' },
+      { value: 'i3', label: 'Intel Core i3' },
+      { value: 'i5', label: 'Intel Core i5' },
+      { value: 'i7', label: 'Intel Core i7' },
+      { value: 'i9', label: 'Intel Core i9' },
+      { value: 'athlon', label: 'AMD Athlon' },
+      { value: 'r3', label: 'AMD Ryzen 3' },
+      { value: 'r5', label: 'AMD Ryzen 5' },
+      { value: 'r7', label: 'AMD Ryzen 7' },
+      { value: 'other', label: 'Other / Unknown' },
+    ];
+
+    function updateProcessorOptions(brand) {
+      const procSelect = document.getElementById('s-processor');
+      const processors = brandProcessors[brand] || defaultProcessors;
+      procSelect.innerHTML = '<option value="">Select Processor</option>';
+      processors.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.value;
+        opt.textContent = p.label;
+        procSelect.appendChild(opt);
+      });
+    }
+
     document.getElementById('s-brand').addEventListener('change', function() {
       const brand = this.value;
       const modelSelect = document.getElementById('s-model');
       
+      // Update models
       if (brand && brandModels[brand]) {
         modelSelect.innerHTML = '<option value="">Select Model</option>';
         brandModels[brand].forEach(model => {
@@ -433,6 +597,13 @@
       } else {
         modelSelect.innerHTML = '<option value="">Select Brand First</option>';
         document.getElementById('s-price').value = '';
+      }
+
+      // Update processors
+      if (brand) {
+        updateProcessorOptions(brand);
+      } else {
+        document.getElementById('s-processor').innerHTML = '<option value="">Select Brand First</option>';
       }
     });
 
@@ -561,11 +732,11 @@
       if (storage === '1000') price += 10000;
       else if (storage === '2000') price += 25000;
 
-      if (gpu === 'entry') price += 12000;
-      else if (gpu === 'mid') price += 35000;
-      else if (gpu === 'high') price += 75000;
-      else if (gpu === 'ultra') price += 140000;
-      else if (gpu === 'mac_pro') price += 45000;
+      if (gpu === 'entry') price += 8000;
+      else if (gpu === 'mid') price += 25000;
+      else if (gpu === 'high') price += 50000;
+      else if (gpu === 'ultra') price += 90000;
+      else if (gpu === 'mac_pro') price += 35000;
 
       document.getElementById('s-price').value = price;
     }
@@ -574,6 +745,7 @@
     document.getElementById('s-ram').addEventListener('change', updateEstimatedPrice);
     document.getElementById('s-storage').addEventListener('change', updateEstimatedPrice);
     document.getElementById('s-gpu').addEventListener('change', updateEstimatedPrice);
+    document.getElementById('s-processor').addEventListener('change', updateEstimatedPrice);
 
     // Set min date for pickup to tomorrow
     const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
@@ -623,6 +795,7 @@
         detailedCondition: detailedCondition,
         ram: document.getElementById('s-ram').value,
         storage: document.getElementById('s-storage').value,
+        processor: document.getElementById('s-processor').value,
         age: document.getElementById('s-age').value,
         accessories
       };
@@ -638,13 +811,14 @@
         document.getElementById('estimate-display').innerHTML = `
           <p style="color:var(--text2);font-size:0.88rem;margin-bottom:0.5rem">Estimated offer for your ${document.getElementById('s-model').value || brand + ' Laptop'}</p>
           <div class="estimate-range">${formatPrice(d.minPrice)} – ${formatPrice(d.maxPrice)}</div>
-          <p style="color:var(--text2);font-size:0.82rem;margin:0.5rem 0 1.5rem">Final price confirmed after physical inspection</p>
+          <p style="color:var(--text2);font-size:0.82rem;margin:0.5rem 0 1.5rem">⚡ Our pickup agent will verify all device specs & condition at your doorstep before confirming the final price.</p>
           <div style="text-align:left">
             <div class="breakdown-row"><span>Base device value</span><span>${formatPrice(d.breakdown.baseValue)}</span></div>
             <div class="breakdown-row"><span style="color:var(--red)">Condition adjustment</span><span style="color:var(--red)">– ${formatPrice(d.breakdown.conditionDeduction)}</span></div>
             <div class="breakdown-row"><span style="color:var(--red)">Age depreciation</span><span style="color:var(--red)">– ${formatPrice(d.breakdown.ageDeduction)}</span></div>
             ${d.breakdown.ramBonus ? `<div class="breakdown-row"><span style="color:var(--green)">High RAM bonus</span><span style="color:var(--green)">+ ${formatPrice(d.breakdown.ramBonus)}</span></div>` : ''}
             ${d.breakdown.storageBonus ? `<div class="breakdown-row"><span style="color:var(--green)">Storage bonus</span><span style="color:var(--green)">+ ${formatPrice(d.breakdown.storageBonus)}</span></div>` : ''}
+            ${d.breakdown.processorBonus ? `<div class="breakdown-row"><span style="color:var(--green)">Processor bonus</span><span style="color:var(--green)">+ ${formatPrice(d.breakdown.processorBonus)}</span></div>` : ''}
             ${d.breakdown.accessoriesBonus ? `<div class="breakdown-row"><span style="color:var(--green)">Accessories bonus</span><span style="color:var(--green)">+ ${formatPrice(d.breakdown.accessoriesBonus)}</span></div>` : ''}
             <div class="breakdown-row" style="font-weight:700;font-size:1rem"><span>Estimated offer</span><span style="color:var(--primary)">${formatPrice(d.estimated)}</span></div>
           </div>
@@ -682,6 +856,11 @@
         document.getElementById('panel5').classList.add('active');
         window.scrollTo({ top: 300, behavior: 'smooth' });
       } catch { showToast('Failed to submit. Please try again.','error'); }
+    }
+
+    function toggleMenu() {
+      const navLinks = document.getElementById('nav-links');
+      if(navLinks) navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
     }
   </script>
   <script>lucide.createIcons();</script>

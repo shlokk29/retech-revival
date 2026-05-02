@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium Subscription – Retech Revival</title>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark';</script>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .lucide { width: 1em; height: 1em; vertical-align: middle; }
+    .subscribe-hero {
+      text-align: center;
+      padding: 4rem 1rem 3rem;
+      background: linear-gradient(135deg, rgba(15,40,71,0.05), rgba(16,185,129,0.05));
+    }
+    .subscribe-hero h1 { font-size: 2.8rem; font-weight: 900; margin-bottom: 1rem; line-height: 1.2; }
+    .subscribe-hero p { color: var(--text2); font-size: 1.1rem; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+    
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+    .pricing-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .pricing-card:hover { transform: translateY(-5px); }
+    .pricing-card.premium {
+      border: 2px solid var(--primary);
+      box-shadow: 0 10px 30px rgba(15,40,71,0.15);
+    }
+    .pricing-card.premium::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+    }
+    .plan-name { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .plan-price { font-size: 3rem; font-weight: 900; color: var(--text); margin-bottom: 1.5rem; }
+    .plan-price span { font-size: 1rem; color: var(--text2); font-weight: 500; }
+    .plan-features { list-style: none; padding: 0; margin: 0 0 2rem 0; }
+    .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      color: var(--text2);
+    }
+    .plan-features li i { color: var(--green); }
+    .btn-plan { width: 100%; font-size: 1.1rem; padding: 0.8rem; }
+  </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-logo">
+      <img src="img/logo.png" alt="Retech Revival Logo" style="width:36px;height:36px;border-radius:8px;object-fit:cover;">
+      <div>
+        <span style="display:block;font-weight:800;letter-spacing:-0.02em;">Retech Revival</span>
+        <span style="display:block;font-size:0.62rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;margin-top:-2px;">Tech Reborn. Value Restored.</span>
+      </div>
+    </a>
+    <div class="nav-links" id="nav-links">
+      <a href="/">Home</a><a href="/catalog.html">Buy</a>
+      <a href="/sell.html">Sell</a><a href="/subscribe.html" class="active">Subscribe</a><a href="/about.html">About</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/cart.html" class="cart-btn"><i data-lucide="shopping-cart"></i> Cart<span class="cart-count" id="cart-count-badge">0</span></a>
+      <a href="/login.html" class="btn-outline" id="nav-login-btn">Login</a>
+      <a href="/signup.html" class="btn-primary" id="nav-signup-btn">Sign Up</a>
+      <div id="nav-user-menu" class="hidden" style="display:flex;align-items:center;gap:0.5rem">
+        <span style="font-size:0.9rem;color:var(--text2)">Hi, <strong id="nav-user-name"></strong></span>
+        <button onclick="logout()" class="btn-outline" style="padding:0.4rem 0.8rem;font-size:0.85rem">Logout</button>
+      </div>
+      <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="subscribe-hero">
+      <h1>Upgrade to <span style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;">Premium</span></h1>
+      <p>Unlock exclusive perks, free shipping, and massive discounts on laptop rentals. Join the Retech Pro community today.</p>
+    </div>
+
+    <div class="container">
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="plan-name">Standard</div>
+          <div class="plan-price">₹0<span> / forever</span></div>
+          <ul class="plan-features">
+            <li><i data-lucide="check-circle-2"></i> Standard delivery rates</li>
+            <li><i data-lucide="check-circle-2"></i> Access to all refurbished laptops</li>
+            <li><i data-lucide="check-circle-2"></i> Standard 6-month warranty</li>
+            <li><i data-lucide="check-circle-2"></i> Regular rental pricing</li>
+            <li style="color:var(--border);"><i data-lucide="x-circle" style="color:var(--border);"></i> No priority support</li>
+          </ul>
+          <button class="btn btn-outline btn-plan" disabled>Current Plan</button>
+        </div>
+
+        <div class="pricing-card premium">
+          <div class="plan-name">ReTech Pro</div>
+          <div class="plan-price">₹499<span> / month</span></div>
+          <ul class="plan-features">
+            <li><i data-lucide="check-circle-2"></i> <strong>Free Express Shipping</strong></li>
+            <li><i data-lucide="check-circle-2"></i> <strong>15% Off all rentals</strong></li>
+            <li><i data-lucide="check-circle-2"></i> Extended 12-month warranty</li>
+            <li><i data-lucide="check-circle-2"></i> 24/7 Priority Support</li>
+            <li><i data-lucide="check-circle-2"></i> 1 Free Screen/Battery Replacement per year</li>
+          </ul>
+          <button class="btn btn-violet btn-plan" onclick="subscribePremium()">Subscribe Now <i data-lucide="arrow-right"></i></button>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin: 4rem 0 2rem; max-width: 600px; margin-left: auto; margin-right: auto; padding: 0 1.5rem;">
+        <h2 style="font-size: 2rem; margin-bottom: 1rem;"><i data-lucide="refresh-cw" style="color: var(--primary);"></i> How Rentals Work</h2>
+        <p style="color: var(--text2); line-height: 1.6;">Don't want to buy? You can now rent any laptop from our catalog for a week, a month, or a full year. Select the <strong>"Rent this device"</strong> option on any product page and get it delivered directly to your doorstep.</p>
+        <a href="/catalog.html" class="btn btn-outline mt-3">Browse Laptops to Rent</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 Retech Revival.</span>
+      </div>
+    </div>
+  </footer>
+  <div id="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script>
+    function toggleMenu() {
+      const navLinks = document.getElementById('nav-links');
+      if(navLinks) navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    }
+    function subscribePremium() {
+      if (!currentUser) {
+        showToast('Please login to subscribe to Premium', 'info');
+        setTimeout(() => location.href = '/login.html?redirect=/subscribe.html', 1500);
+        return;
+      }
+      showToast('Redirecting to payment gateway...', 'info');
+      setTimeout(() => {
+        showToast('Successfully subscribed to ReTech Pro! 🎉', 'success');
+      }, 2000);
+    }
+  </script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

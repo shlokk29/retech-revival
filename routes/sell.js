@@ -9,13 +9,24 @@ const brandMultiplier = {
 const conditionMultiplier = {
   'like-new': 0.88, 'excellent': 0.75, 'good': 0.60, 'fair': 0.40, 'poor': 0.22
 };
-const ramBonus = { '4': 0, '8': 2000, '16': 5000, '32': 9000, '64': 14000 };
-const storageBonus = { '128': 0, '256': 1500, '512': 3500, '1000': 6000, '2000': 10000 };
+const ramBonus = { '4': 0, '8': 2000, '16': 5000, '32': 12000, '64': 20000 };
+const storageBonus = { '128': 0, '256': 1500, '512': 4000, '1000': 8000, '2000': 15000 };
+const processorBonus = {
+  'celeron': 0, 'pentium': 0, 'athlon': 0, 'other': 0, 'snapdragon': 1000,
+  'i3': 1500, 'r3': 1500,
+  'i5': 3000, 'r5': 3000,
+  'i7': 6000, 'r7': 6000,
+  'i5_ultra': 5000, 'i7_ultra': 8000,
+  'i9': 15000, 'r9': 15000, 'i9_ultra': 18000,
+  'm1': 5000, 'm2': 7000, 'm3': 9000,
+  'm1_pro': 10000, 'm2_pro': 12000, 'm3_pro': 14000,
+  'm1_max': 18000, 'm2_max': 22000, 'm3_max': 25000
+};
 const ageMultiplier = { '0-1': 1.0, '1-2': 0.85, '2-3': 0.70, '3-5': 0.55, '5+': 0.35 };
 
 // POST /api/sell/estimate
 router.post('/estimate', (req, res) => {
-  const { brand, purchasePrice, condition, detailedCondition, ram, storage, age, accessories } = req.body;
+  const { brand, purchasePrice, condition, detailedCondition, ram, storage, processor, age, accessories } = req.body;
 
   if (!brand || !purchasePrice || !condition) {
     return res.status(400).json({ success: false, message: 'Brand, purchase price and condition are required' });
@@ -27,11 +38,12 @@ router.post('/estimate', (req, res) => {
   const am = ageMultiplier[age] || 0.65;
   const rb = ramBonus[String(ram)] || 0;
   const sb = storageBonus[String(storage)] || 0;
+  const pb = processorBonus[String(processor)] || 0;
   let accBonus = 0;
   if (accessories) {
-    if (accessories.includes('charger')) accBonus += 800;
-    if (accessories.includes('box')) accBonus += 400;
-    if (accessories.includes('bag')) accBonus += 300;
+    if (accessories.includes('charger')) accBonus += 1000;
+    if (accessories.includes('box')) accBonus += 600;
+    if (accessories.includes('bag')) accBonus += 500;
   }
 
   let detailDeduction = 0;
@@ -64,9 +76,9 @@ router.post('/estimate', (req, res) => {
     }
   }
 
-  let estimated = Math.round((base * bm * cm * am) - detailDeduction + rb + sb + accBonus);
+  let estimated = Math.round((base * bm * cm * am) - detailDeduction + rb + sb + pb + accBonus);
   
-  if (estimated < 500) estimated = 500; // Minimum salvage value
+  if (estimated < 1000) estimated = 1000; // Minimum salvage value
 
   const minPrice = Math.round(estimated * 0.90);
   const maxPrice = Math.round(estimated * 1.10);
@@ -83,6 +95,7 @@ router.post('/estimate', (req, res) => {
         ageDeduction: Math.round(base * bm * cm * (1 - am)),
         ramBonus: rb,
         storageBonus: sb,
+        processorBonus: pb,
         accessoriesBonus: accBonus
       }
     }

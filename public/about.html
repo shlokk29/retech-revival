@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Us – Retech Revival</title>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark';</script>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     .lucide { width: 1em; height: 1em; vertical-align: middle; }
-    .about-hero { background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(108,99,255,0.3) 0%, transparent 70%), var(--bg); padding: 5rem 0 3rem; text-align: center; }
+    .about-hero { background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(15,40,71,0.3) 0%, transparent 70%), var(--bg); padding: 5rem 0 3rem; text-align: center; }
     .about-hero h1 { font-size: 2.8rem; font-weight: 900; margin-bottom: 1rem; }
     .about-hero p { font-size: 1.1rem; color: var(--text2); max-width: 600px; margin: 0 auto 2rem; line-height: 1.7; }
     .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; padding: 3rem 0; }
@@ -16,14 +17,14 @@
     .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
     .mission-text h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
     .mission-text p { color: var(--text2); line-height: 1.8; margin-bottom: 1rem; }
-    .mission-visual { background: linear-gradient(135deg, rgba(108,99,255,0.12), rgba(34,211,238,0.08)); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem; }
+    .mission-visual { background: linear-gradient(135deg, rgba(15,40,71,0.12), rgba(16,185,129,0.08)); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem; }
     .value-item { display: flex; gap: 1rem; margin-bottom: 1.25rem; }
     .value-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
     .value-item h4 { font-weight: 700; margin-bottom: 0.2rem; }
     .value-item p { font-size: 0.88rem; color: var(--text2); margin: 0; }
     .team-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
     .team-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; transition: all 0.3s; }
-    .team-card:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-4px); }
+    .team-card:hover { border-color: rgba(15,40,71,0.4); transform: translateY(-4px); }
     .team-avatar { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; }
     .team-card h3 { font-size: 1rem; font-weight: 700; }
     .team-card p { font-size: 0.85rem; color: var(--text2); margin: 0.3rem 0 0; }
@@ -33,10 +34,16 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-logo"><div class="logo-icon"><i data-lucide="recycle"></i></div><span>Retech Revival</span></a>
-    <div class="nav-links">
+    <a href="/" class="nav-logo">
+      <img src="img/logo.png" alt="Retech Revival Logo" style="width:36px;height:36px;border-radius:8px;object-fit:cover;">
+      <div>
+        <span style="display:block;font-weight:800;letter-spacing:-0.02em;">Retech Revival</span>
+        <span style="display:block;font-size:0.62rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;margin-top:-2px;">Tech Reborn. Value Restored.</span>
+      </div>
+    </a>
+    <div class="nav-links" id="nav-links">
       <a href="/">Home</a><a href="/catalog.html">Buy</a>
-      <a href="/sell.html">Sell</a><a href="/about.html" class="active">About</a>
+      <a href="/sell.html">Sell</a><a href="/subscribe.html">Subscribe</a><a href="/about.html" class="active">About</a>
     </div>
     <div class="nav-actions">
       <a href="/cart.html" class="cart-btn"><i data-lucide="shopping-cart"></i> Cart<span class="cart-count" id="cart-count-badge">0</span></a>
@@ -46,6 +53,7 @@
         <span style="font-size:0.9rem;color:var(--text2)">Hi, <strong id="nav-user-name"></strong></span>
         <button onclick="logout()" class="btn-outline" style="padding:0.4rem 0.8rem;font-size:0.85rem">Logout</button>
       </div>
+      <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
     </div>
   </nav>
 
@@ -53,7 +61,7 @@
     <div class="about-hero">
       <div class="container">
         <div class="hero-tag" style="display:inline-flex;margin-bottom:1.5rem"><i data-lucide="leaf"></i> Our Story</div>
-        <h1>Affordable Tech.<br><span style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Sustainable Future.</span></h1>
+        <h1>Affordable Tech.<br><span style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;">Sustainable Future.</span></h1>
         <p>Retech Revival was born from a simple idea: premium technology shouldn't be a luxury. We bridge the gap between high-quality refurbished devices and students, startups, and professionals who need them.</p>
         <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
           <a href="/catalog.html" class="btn btn-violet btn-lg">Shop Now</a>
@@ -75,7 +83,7 @@
           </div>
           <div class="mission-visual">
             <div class="value-item"><div class="value-icon"><i data-lucide="recycle"></i></div><div><h4>Sustainability First</h4><p>Each refurbished laptop saves ~40kg of CO₂ vs manufacturing a new one.</p></div></div>
-            <div class="value-item"><div class="value-icon"><i data-lucide="microscope"></i></div><div><h4>Quality Certified</h4><p>Every device passes a rigorous 40-point inspection before listing.</p></div></div>
+            <div class="value-item"><div class="value-icon"><i data-lucide="microscope"></i></div><div><h4>Quality Certified</h4><p>Every device passes a rigorous 50-point inspection before listing.</p></div></div>
             <div class="value-item"><div class="value-icon"><i data-lucide="circle-dollar-sign"></i></div><div><h4>Fair Pricing</h4><p>Transparent, data-driven pricing for both buyers and sellers.</p></div></div>
             <div class="value-item"><div class="value-icon"><i data-lucide="handshake"></i></div><div><h4>Trust & Transparency</h4><p>What you see is what you get — no hidden fees, no surprises.</p></div></div>
           </div>
@@ -91,13 +99,13 @@
         </div>
         <div class="team-grid">
           <div class="team-card">
-            <div class="team-avatar" style="background:rgba(108,99,255,0.2);color:var(--primary)">👨‍<i data-lucide="laptop"></i></div>
+            <div class="team-avatar" style="background:rgba(15,40,71,0.2);color:var(--primary)">👨‍<i data-lucide="laptop"></i></div>
             <h3>Team Member 1</h3>
             <p>Co-Founder & CEO</p>
             <p style="font-size:0.78rem;color:var(--text3);margin-top:0.5rem">Product Strategy & Business Development</p>
           </div>
           <div class="team-card">
-            <div class="team-avatar" style="background:rgba(34,211,238,0.2);color:var(--accent)">👩‍<i data-lucide="briefcase"></i></div>
+            <div class="team-avatar" style="background:rgba(16,185,129,0.2);color:var(--accent)">👩‍<i data-lucide="briefcase"></i></div>
             <h3>Team Member 2</h3>
             <p>Co-Founder & COO</p>
             <p style="font-size:0.78rem;color:var(--text3);margin-top:0.5rem">Operations, Logistics & Customer Experience</p>
@@ -114,7 +122,7 @@
 
     <section class="section">
       <div class="container">
-        <div class="cta-banner" style="background:linear-gradient(135deg,rgba(108,99,255,0.2),rgba(34,211,238,0.1));border:1px solid rgba(108,99,255,0.3);border-radius:24px;padding:4rem 3rem;text-align:center">
+        <div class="cta-banner" style="background:linear-gradient(135deg,rgba(15,40,71,0.2),rgba(16,185,129,0.1));border:1px solid rgba(15,40,71,0.3);border-radius:24px;padding:4rem 3rem;text-align:center">
           <h2 style="font-size:2rem;font-weight:800;margin-bottom:0.75rem">Ready to Join the <span class="text-primary">Revival?</span></h2>
           <p style="color:var(--text2);max-width:480px;margin:0 auto 2rem;line-height:1.7">Whether you want to buy affordable tech or sell your old device, we've got you covered.</p>
           <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
@@ -129,13 +137,19 @@
   <footer>
     <div class="container">
       <div class="footer-bottom">
-        <span>© 2025 Retech Revival. All rights reserved.</span>
+        <span>© 2026 Retech Revival. All rights reserved.</span>
         <span>Made with <i data-lucide="recycle"></i> for a sustainable future</span>
       </div>
     </div>
   </footer>
   <div id="toast-container"></div>
   <script src="js/main.js"></script>
+  <script>
+    function toggleMenu() {
+      const navLinks = document.getElementById('nav-links');
+      if(navLinks) navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
   <script>lucide.createIcons();</script>
 </body>
 </html>

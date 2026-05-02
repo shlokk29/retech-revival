@@ -176,7 +176,7 @@ const products = [
     name: 'Microsoft Surface Pro 8',
     brand: 'Microsoft',
     category: 'Tablet/Laptop',
-    price: 71000,
+    price: 54999,
     originalPrice: 115000,
     condition: 'Like New',
     ram: '16GB',

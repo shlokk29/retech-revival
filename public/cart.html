@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Cart – Retech Revival</title>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark';</script>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     .lucide { width: 1em; height: 1em; vertical-align: middle; }
@@ -12,8 +13,8 @@
       padding: 1.25rem; display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1rem;
       transition: all 0.2s;
     }
-    .cart-item:hover { border-color: rgba(108,99,255,0.25); }
-    .cart-item-icon { width: 80px; height: 80px; background: linear-gradient(135deg,rgba(108,99,255,0.12),rgba(34,211,238,0.07)); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; flex-shrink: 0; }
+    .cart-item:hover { border-color: rgba(15,40,71,0.25); }
+    .cart-item-icon { width: 80px; height: 80px; background: linear-gradient(135deg,rgba(15,40,71,0.12),rgba(16,185,129,0.07)); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; flex-shrink: 0; }
     .cart-item-info { flex: 1; }
     .cart-item-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; }
     .cart-item-info p { font-size: 0.82rem; color: var(--text2); margin-bottom: 0.5rem; }
@@ -41,10 +42,16 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-logo"><div class="logo-icon"><i data-lucide="recycle"></i></div><span>Retech Revival</span></a>
-    <div class="nav-links">
+    <a href="/" class="nav-logo">
+      <img src="img/logo.png" alt="Retech Revival Logo" style="width:36px;height:36px;border-radius:8px;object-fit:cover;">
+      <div>
+        <span style="display:block;font-weight:800;letter-spacing:-0.02em;">Retech Revival</span>
+        <span style="display:block;font-size:0.62rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;margin-top:-2px;">Tech Reborn. Value Restored.</span>
+      </div>
+    </a>
+    <div class="nav-links" id="nav-links">
       <a href="/">Home</a><a href="/catalog.html">Buy</a>
-      <a href="/sell.html">Sell</a><a href="/about.html">About</a>
+      <a href="/sell.html">Sell</a><a href="/subscribe.html">Subscribe</a><a href="/about.html">About</a>
     </div>
     <div class="nav-actions">
       <a href="/cart.html" class="cart-btn active"><i data-lucide="shopping-cart"></i> Cart<span class="cart-count" id="cart-count-badge">0</span></a>
@@ -54,6 +61,7 @@
         <span style="font-size:0.9rem;color:var(--text2)">Hi, <strong id="nav-user-name"></strong></span>
         <button onclick="logout()" class="btn-outline" style="padding:0.4rem 0.8rem;font-size:0.85rem">Logout</button>
       </div>
+      <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
     </div>
   </nav>
 
@@ -112,7 +120,7 @@
           <option value="emi">EMI</option>
         </select>
       </div>
-      <div id="order-total-display" style="background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.2);border-radius:var(--radius-sm);padding:0.9rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center">
+      <div id="order-total-display" style="background:rgba(15,40,71,0.08);border:1px solid rgba(15,40,71,0.2);border-radius:var(--radius-sm);padding:0.9rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center">
         <span style="font-weight:700">Order Total</span>
         <span class="text-primary fw-800" id="modal-total" style="font-size:1.15rem"></span>
       </div>
@@ -131,10 +139,21 @@
     </div>
   </div>
 
-  <footer><div class="container"><div class="footer-bottom"><span>© 2025 Retech Revival.</span></div></div></footer>
+  <footer><div class="container"><div class="footer-bottom"><span>© 2026 Retech Revival.</span></div></div></footer>
   <div id="toast-container"></div>
   <script src="js/main.js"></script>
   <script>
+    const brandImgMap = {
+      'Apple': 'img/macbook_pro.png', 'Dell': 'img/dell_xps.png',
+      'HP': 'img/hp_spectre.png', 'Lenovo': 'img/thinkpad.png',
+      'ASUS': 'img/asus_rog.png', 'Microsoft': 'img/microsoft_surface.png',
+      'Acer': 'img/acer_swift.png', 'Razer': 'img/razer_blade.png',
+      'Samsung': 'img/samsung_galaxy.png'
+    };
+    function getBrandImg(brand) {
+      return brandImgMap[brand] || 'img/laptop2.png';
+    }
+
     async function loadCart() {
       const container = document.getElementById('cart-items-container');
       const summaryRows = document.getElementById('summary-rows');
@@ -149,31 +168,31 @@
           return;
         }
         container.innerHTML = items.map(item => `
-          <div class="cart-item" id="item-${item.productId}">
-            <div class="cart-item-icon" style="padding:0; overflow:hidden;"><img src="${item.image || '/img/' + (item.brand ? item.brand.toLowerCase() : '') + '.png'}" onerror="this.src='/img/laptop2.png'" style="width:100%; height:100%; object-fit:cover;"></div>
+          <div class="cart-item" id="item-${item.cartItemId || item.productId}">
+            <div class="cart-item-icon" style="padding:0; overflow:hidden;"><img src="${item.image || getBrandImg(item.brand)}" onerror="this.src='/img/laptop2.png'" style="width:100%; height:100%; object-fit:cover;"></div>
             <div class="cart-item-info">
               <h4>${item.name}</h4>
-              <p>${item.brand} · <span class="badge ${conditionBadgeClass(item.condition)}" style="font-size:0.7rem">${item.condition}</span></p>
-              <div class="cart-item-price">${formatPrice(item.price)}</div>
+              <p>${item.brand} · <span class="badge ${conditionBadgeClass(item.condition)}" style="font-size:0.7rem">${item.condition}</span> ${item.type === 'rent' ? `<span class="badge badge-blue" style="font-size:0.7rem">Rental (${item.duration})</span>` : ''}</p>
+              <div class="cart-item-price">${formatPrice(item.price)}${item.type === 'rent' ? ' <span style="font-size:0.8rem;color:var(--text2);font-weight:normal">/' + item.duration.split('-')[0] + '</span>' : ''}</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.75rem">
               <div class="qty-ctrl">
-                <button class="qty-btn" onclick="updateQty('${item.productId}', ${item.quantity - 1})">−</button>
+                <button class="qty-btn" onclick="updateQty('${item.cartItemId || item.productId}', ${item.quantity - 1})">−</button>
                 <span class="qty-val">${item.quantity}</span>
-                <button class="qty-btn" onclick="updateQty('${item.productId}', ${item.quantity + 1})">+</button>
+                <button class="qty-btn" onclick="updateQty('${item.cartItemId || item.productId}', ${item.quantity + 1})">+</button>
               </div>
               <div style="font-weight:700">${formatPrice(item.price * item.quantity)}</div>
-              <button class="remove-btn" onclick="removeItem('${item.productId}')"><i data-lucide="trash-2"></i> Remove</button>
+              <button class="remove-btn" onclick="removeItem('${item.cartItemId || item.productId}')"><i data-lucide="trash-2"></i> Remove</button>
             </div>
           </div>
         `).join('');
-        const shipping = total > 30000 ? 0 : 499;
+        const shipping = total > 30000 ? 0 : 399;
         summaryRows.innerHTML = `
           <div class="summary-row"><span>Subtotal (${count} item${count !== 1 ? 's' : ''})</span><span>${formatPrice(total)}</span></div>
           <div class="summary-row"><span>Shipping</span><span class="${shipping === 0 ? 'text-green' : ''}">${shipping === 0 ? 'FREE' : formatPrice(shipping)}</span></div>
           <div class="summary-row"><span>GST (5%)</span><span>${formatPrice(Math.round(total * 0.05))}</span></div>
           <div class="summary-row summary-total"><span>Total</span><span class="text-primary">${formatPrice(total + shipping + Math.round(total * 0.05))}</span></div>
-          ${total < 30000 ? '<p style="font-size:0.75rem;color:var(--green);margin-top:0.5rem">Add ₹' + formatPrice(30000 - total) + ' more for free shipping!</p>' : '<p style="font-size:0.75rem;color:var(--green);margin-top:0.5rem">✓ You qualify for free shipping!</p>'}
+          ${total < 30000 ? '<p style="font-size:0.75rem;color:var(--green);margin-top:0.5rem">Add ' + formatPrice(30000 - total) + ' more for free shipping!</p>' : '<p style="font-size:0.75rem;color:var(--green);margin-top:0.5rem">✓ You qualify for free shipping!</p>'}
         `;
         document.getElementById('checkout-btn').style.display = 'flex';
         document.getElementById('modal-total').textContent = formatPrice(total + shipping + Math.round(total * 0.05));
@@ -182,16 +201,16 @@
       }
     }
 
-    async function updateQty(productId, qty) {
+    async function updateQty(cartItemId, qty) {
       await fetch('/api/cart/update', {
         method: 'PUT', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ productId, quantity: qty })
+        body: JSON.stringify({ cartItemId, quantity: qty })
       });
       loadCart();
     }
 
-    async function removeItem(productId) {
-      await fetch('/api/cart/remove/' + productId, { method: 'DELETE' });
+    async function removeItem(cartItemId) {
+      await fetch('/api/cart/remove/' + cartItemId, { method: 'DELETE' });
       showToast('Item removed from cart', 'info');
       loadCart();
     }
@@ -221,6 +240,11 @@
         document.getElementById('success-modal').classList.remove('hidden');
         loadCart();
       } catch { showToast('Failed to place order. Try again.', 'error'); }
+    }
+
+    function toggleMenu() {
+      const navLinks = document.getElementById('nav-links');
+      if(navLinks) navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
     }
 
     loadCart();
