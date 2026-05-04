@@ -5,6 +5,7 @@
   <title>About Us – Retech Revival</title>
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark';</script>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations3d.css" />
   <style>
     .lucide { width: 1em; height: 1em; vertical-align: middle; }
     .about-hero { background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(15,40,71,0.3) 0%, transparent 70%), var(--bg); padding: 5rem 0 3rem; text-align: center; }
@@ -61,7 +62,7 @@
     <div class="about-hero">
       <div class="container">
         <div class="hero-tag" style="display:inline-flex;margin-bottom:1.5rem"><i data-lucide="leaf"></i> Our Story</div>
-        <h1>Affordable Tech.<br><span style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;">Sustainable Future.</span></h1>
+        <h1 class="text-3d">Affordable Tech.<br><span style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;" class="text-shimmer">Sustainable Future.</span></h1>
         <p>Retech Revival was born from a simple idea: premium technology shouldn't be a luxury. We bridge the gap between high-quality refurbished devices and students, startups, and professionals who need them.</p>
         <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
           <a href="/catalog.html" class="btn btn-violet btn-lg">Shop Now</a>
@@ -76,7 +77,7 @@
       <div class="container">
         <div class="mission-grid">
           <div class="mission-text">
-            <h2>Why We <span class="text-primary">Started</span></h2>
+            <h2 class="text-3d">Why We <span class="text-primary">Started</span></h2>
             <p>As college students ourselves, we saw the problem first-hand: new laptops cost a semester's worth of fees, yet millions of perfectly functional devices sat unused, rapidly losing value in people's homes.</p>
             <p>We created Retech Revival to solve both problems simultaneously — giving buyers access to affordable, certified devices and giving sellers a fair, transparent price for their old tech.</p>
             <p>Every device we refurbish is one less piece of e-waste. Every student who buys from us saves money they can invest in their education.</p>
@@ -94,7 +95,8 @@
     <section class="section" style="background:var(--bg2)">
       <div class="container">
         <div class="text-center mb-3">
-          <h2 class="section-title">Meet the <span class="text-primary">Team</span></h2>
+          <h2 class="section-title text-3d">Meet the <span class="text-primary">Team</span></h2>
+          <div class="section-divider"></div>
           <p class="section-sub">The students behind Retech Revival</p>
         </div>
         <div class="team-grid">
@@ -144,6 +146,7 @@
   </footer>
   <div id="toast-container"></div>
   <script src="js/main.js"></script>
+  <script src="js/animations3d.js"></script>
   <script>
     // toggleMenu is defined globally in main.js
   </script>
