@@ -7,6 +7,7 @@
   <meta name="description" content="Browse our full catalog of certified refurbished laptops. Filter by brand, condition, price and more." />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/animations3d.css" />
+  <link rel="stylesheet" href="css/ml-widgets.css" />
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark';</script>
   <style>
     .lucide { width: 1em; height: 1em; vertical-align: middle; }
@@ -390,6 +391,7 @@
               <option value="price_asc">Price: Low to High</option>
               <option value="price_desc">Price: High to Low</option>
               <option value="rating">Top Rated</option>
+              <option value="trending">🤖 AI Trending</option>
             </select>
           </div>
         </aside>
@@ -423,6 +425,7 @@
 
   <div id="toast-container"></div>
   <script src="js/main.js"></script>
+  <script src="js/ml-widgets.js"></script>
   <script src="js/animations3d.js"></script>
   <script>
     let activeFilters = { brand: '', condition: '', minPrice: '', maxPrice: '', q: '', sort: '' };
@@ -478,21 +481,29 @@
         const r = await fetch('/api/products?' + params.toString());
         const data = await r.json();
         const products = data.data || [];
-        document.getElementById('results-count').textContent = `${products.length} device${products.length !== 1 ? 's' : ''} found`;
-        if (!products.length) {
+        // Enrich products with ML trending data
+        let enriched = await enrichCatalogWithML(products);
+        // Sort by trending if selected
+        if (activeFilters.sort === 'trending') {
+          enriched.sort((a, b) => (b._mlTrend?.score || 0) - (a._mlTrend?.score || 0));
+        }
+        document.getElementById('results-count').textContent = `${enriched.length} device${enriched.length !== 1 ? 's' : ''} found`;
+        if (!enriched.length) {
           grid.innerHTML = `<div class="no-results" style="grid-column:1/-1"><div class="icon"><i data-lucide="search"></i></div><h3>No devices found</h3><p>Try adjusting your filters or search term.</p></div>`;
           return;
         }
-        grid.innerHTML = products.map(p => {
+        grid.innerHTML = enriched.map(p => {
           const discount = Math.round((1 - p.price / p.originalPrice) * 100);
           const rentPrice = Math.round(p.price * 0.07);
           const condClass = p.condition.toLowerCase().replace(/\s+/g, '-');
+          const trendBadge = p._mlTrend ? `<div class="prod-ml-badge">${p._mlTrend.emoji} ${p._mlTrend.label}</div>` : '';
           return `
           <div class="prod-card" onclick="location.href='/product.html?id=${p._id}'">
             <div class="prod-img-wrap">
               <img src="${p.images?.[0] || 'img/laptop2.png'}" alt="${p.name}" loading="lazy" />
               <div class="prod-discount">-${discount}%</div>
               <span class="prod-cond-badge ${condClass}">${p.condition}</span>
+              ${trendBadge}
             </div>
             <div class="prod-body">
               <div class="prod-name">${p.name}</div>

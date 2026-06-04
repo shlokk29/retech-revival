@@ -7,6 +7,7 @@
   <meta name="description" content="Buy and sell premium refurbished laptops at the best prices. Certified quality, 6-month warranty, free doorstep delivery." />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/animations3d.css" />
+  <link rel="stylesheet" href="css/ml-widgets.css" />
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark';</script>
   <style>
     .lucide { width: 1em; height: 1em; vertical-align: middle; }
@@ -267,6 +268,23 @@
       </div>
     </section>
 
+    <!-- ML TRENDING PRODUCTS -->
+    <section class="section ml-home-section" style="background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%)">
+      <div class="container">
+        <div class="ml-section-header">
+          <div class="ml-section-title">
+            <span class="ml-badge-ai">🤖 AI Powered</span>
+            <h3 class="section-title">Trending <span class="text-primary">Right Now</span></h3>
+            <p class="ml-section-sub">Our ML engine identifies the hottest devices based on real-time demand signals</p>
+          </div>
+        </div>
+        <div id="ml-trending-home"></div>
+        <div class="text-center mt-3">
+          <a href="/catalog.html" class="btn btn-ghost btn-lg">View Full Catalog →</a>
+        </div>
+      </div>
+    </section>
+
     <!-- HOW IT WORKS -->
     <section class="section" style="background:var(--bg2)">
       <div class="container">
@@ -356,6 +374,7 @@
 
   <div id="toast-container"></div>
   <script src="js/main.js"></script>
+  <script src="js/ml-widgets.js"></script>
   <script src="js/animations3d.js"></script>
   <script>
     // Load featured products
@@ -392,6 +411,8 @@
       }
     }
     loadFeatured();
+    // Load ML Trending Products
+    loadTrending('ml-trending-home', 6);
 
     // toggleMenu is defined globally in main.js
   </script>

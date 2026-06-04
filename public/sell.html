@@ -7,6 +7,7 @@
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark';</script>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/animations3d.css" />
+  <link rel="stylesheet" href="css/ml-widgets.css" />
   <style>
     .lucide { width: 1em; height: 1em; vertical-align: middle; }
     .sell-layout { display: grid; grid-template-columns: 1fr 420px; gap: 3rem; padding: 3rem 0; }
@@ -250,6 +251,8 @@
             <h2><i data-lucide="party-popper"></i> Your Estimated Price</h2>
             <p class="sub">Based on the details provided, here's what we'd offer:</p>
             <div class="estimate-card mb-3" id="estimate-display"></div>
+            <!-- ML AI Price Prediction -->
+            <div id="ml-price-prediction"></div>
             <div class="nav-btns">
               <button class="btn btn-ghost" onclick="goStep(2)">← Recalculate</button>
               <button class="btn btn-violet" onclick="goStep(4)">Accept & Schedule Pickup →</button>
@@ -332,6 +335,7 @@
   </footer>
   <div id="toast-container"></div>
   <script src="js/main.js"></script>
+  <script src="js/ml-widgets.js"></script>
   <script src="js/animations3d.js"></script>
   <script>
     let currentStep = 1;
@@ -826,6 +830,20 @@
           </div>
         `;
         goStep(3);
+
+        // Also get ML prediction for comparison
+        const mlSpecs = {
+          brand,
+          ram: document.getElementById('s-ram').value + 'GB',
+          storage: document.getElementById('s-storage').value + 'GB SSD',
+          condition: { 'like-new': 'Like New', 'excellent': 'Excellent', 'good': 'Good', 'fair': 'Fair', 'poor': 'Fair' }[cond] || 'Good',
+          processor: document.getElementById('s-processor').selectedOptions[0]?.textContent || 'Intel Core i5',
+          originalPrice: Number(price),
+          rating: 4.0
+        };
+        const mlPrediction = await getAIPricePrediction(mlSpecs);
+        if (mlPrediction) renderAIPrediction(mlPrediction, 'ml-price-prediction');
+
       } catch { showToast('Failed to get estimate. Please try again.','error'); }
     }
 

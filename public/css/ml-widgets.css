@@ -1,0 +1,352 @@
+/* ╔══════════════════════════════════════════════════════════════╗
+ * ║         ReTech Revival — ML Widget Styles                    ║
+ * ║  Premium UI for AI-powered features                          ║
+ * ╚══════════════════════════════════════════════════════════════╝ */
+
+/* ── AI Badge ───────────────────────────────────────────────── */
+.ml-badge-ai {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.15));
+  border: 1px solid rgba(139,92,246,0.3);
+  color: #8b5cf6; padding: 0.2rem 0.6rem; border-radius: 12px;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em;
+}
+
+.ml-powered {
+  font-size: 0.72rem; color: var(--text3); font-style: italic;
+}
+
+/* ── ML Section Layout ──────────────────────────────────────── */
+.ml-section {
+  margin: 2.5rem 0;
+  padding: 2rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+.ml-section::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #8b5cf6, #3b82f6, #10b981, #8b5cf6);
+  background-size: 200% 100%;
+  animation: mlGradientFlow 3s ease infinite;
+}
+@keyframes mlGradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.ml-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.ml-section-title {
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.ml-section-title h3 {
+  font-size: 1.15rem; font-weight: 800; margin: 0;
+}
+
+/* ── Skeleton Loading ───────────────────────────────────────── */
+.ml-loading .ml-skeleton-card {
+  background: var(--bg3); border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.ml-skeleton-img {
+  height: 120px; background: linear-gradient(90deg, var(--bg3), var(--border), var(--bg3));
+  background-size: 200% 100%; animation: mlShimmer 1.5s ease infinite;
+}
+.ml-skeleton-text {
+  height: 14px; background: linear-gradient(90deg, var(--bg3), var(--border), var(--bg3));
+  background-size: 200% 100%; animation: mlShimmer 1.5s ease infinite;
+  margin: 0.75rem; border-radius: 4px;
+}
+.ml-skeleton-text.short { width: 60%; }
+@keyframes mlShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Recommendation Cards ───────────────────────────────────── */
+.ml-recs-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+}
+@media (max-width: 900px) { .ml-recs-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .ml-recs-grid { grid-template-columns: 1fr; } }
+
+.ml-rec-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden; cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+.ml-rec-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(139,92,246,0.12), 0 0 0 1px rgba(139,92,246,0.2);
+  border-color: rgba(139,92,246,0.4);
+}
+
+.ml-rec-match {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white; padding: 0.15rem 0.55rem; border-radius: 10px;
+  font-size: 0.68rem; font-weight: 700;
+  box-shadow: 0 2px 8px rgba(139,92,246,0.4);
+}
+
+.ml-rec-img {
+  height: 130px; overflow: hidden;
+  background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(59,130,246,0.04));
+}
+.ml-rec-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.5s;
+}
+.ml-rec-card:hover .ml-rec-img img { transform: scale(1.08); }
+
+.ml-rec-body { padding: 0.85rem; }
+
+.ml-rec-name {
+  font-size: 0.85rem; font-weight: 700; margin-bottom: 0.25rem;
+  line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.ml-rec-reason {
+  font-size: 0.72rem; color: var(--text3);
+  margin-bottom: 0.5rem;
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.ml-rec-reason::before {
+  content: '🔗'; font-size: 0.65rem;
+}
+
+.ml-rec-price {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.ml-rec-current { font-weight: 800; font-size: 0.95rem; color: var(--text); }
+.ml-rec-original { font-size: 0.75rem; color: var(--text3); text-decoration: line-through; }
+
+/* ── Trending Cards ─────────────────────────────────────────── */
+.ml-trending-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+}
+@media (max-width: 900px) { .ml-trending-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .ml-trending-grid { grid-template-columns: 1fr; } }
+
+.ml-trending-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); overflow: hidden;
+  cursor: pointer; transition: all 0.35s; position: relative;
+}
+.ml-trending-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+  border-color: rgba(245,158,11,0.4);
+}
+
+.ml-trending-rank {
+  position: absolute; top: 8px; left: 8px; z-index: 2;
+  background: linear-gradient(135deg, #0f2847, #1a365d);
+  color: white; width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 800;
+  box-shadow: 0 2px 8px rgba(15,40,71,0.4);
+}
+
+.ml-trending-badge {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  background: rgba(245,158,11,0.9); color: white;
+  padding: 0.15rem 0.55rem; border-radius: 10px;
+  font-size: 0.68rem; font-weight: 700;
+}
+
+.ml-trending-img {
+  height: 140px; overflow: hidden;
+  background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(15,40,71,0.04));
+}
+.ml-trending-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.5s;
+}
+.ml-trending-card:hover .ml-trending-img img { transform: scale(1.05); }
+
+.ml-trending-body { padding: 0.85rem; }
+.ml-trending-name {
+  font-size: 0.88rem; font-weight: 700; margin-bottom: 0.2rem;
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ml-trending-specs { font-size: 0.72rem; color: var(--text3); margin-bottom: 0.5rem; }
+.ml-trending-price {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ml-trending-current { font-weight: 800; font-size: 0.95rem; }
+.ml-trending-score { font-size: 0.7rem; color: var(--text3); }
+
+/* ── AI Price Insight (Product Page) ────────────────────────── */
+.ml-insights { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+
+.ml-price-insight {
+  border: 1px solid;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+.ml-price-insight::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, #8b5cf6, #3b82f6, #10b981);
+}
+
+.ml-price-insight-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.ml-confidence {
+  font-size: 0.72rem; color: var(--text3); font-weight: 500;
+}
+
+.ml-price-tag {
+  font-size: 1.15rem; font-weight: 800; margin-bottom: 0.5rem;
+}
+
+.ml-price-details {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.5rem;
+}
+
+.ml-fair-price { display: flex; flex-direction: column; }
+.ml-fair-price .ml-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); }
+.ml-fair-price .ml-value { font-size: 1.1rem; font-weight: 800; color: var(--text); }
+
+.ml-savings-pill {
+  background: rgba(5,150,105,0.1); border: 1px solid rgba(5,150,105,0.3);
+  color: var(--green); padding: 0.3rem 0.75rem; border-radius: 20px;
+  font-size: 0.78rem; font-weight: 600;
+}
+
+/* ── Trending Badge (inline) ────────────────────────────────── */
+.ml-trend-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.25);
+  padding: 0.4rem 0.85rem; border-radius: 12px;
+  font-size: 0.82rem; font-weight: 600;
+}
+.ml-trend-rank { font-size: 0.72rem; color: var(--text3); }
+
+/* ── ML Price Prediction (Sell Page) ────────────────────────── */
+.ml-prediction-card {
+  background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.06));
+  border: 1px solid rgba(139,92,246,0.25);
+  border-radius: var(--radius);
+  padding: 1.5rem; margin-top: 1rem;
+  position: relative; overflow: hidden;
+}
+.ml-prediction-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #8b5cf6, #3b82f6, #10b981);
+}
+
+.ml-prediction-header {
+  display: flex; align-items: center; gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.ml-prediction-title {
+  font-size: 0.95rem; font-weight: 700;
+}
+
+.ml-prediction-body { display: flex; flex-direction: column; gap: 1rem; }
+
+.ml-prediction-main {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.ml-prediction-label {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text3); margin-bottom: 0.2rem;
+}
+.ml-prediction-value {
+  font-size: 2rem; font-weight: 900;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+
+.ml-prediction-range { margin-top: 0.5rem; }
+.ml-range-bar {
+  height: 8px; background: var(--bg3); border-radius: 4px;
+  overflow: hidden; margin-bottom: 0.4rem;
+}
+.ml-range-fill {
+  height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, #8b5cf6, #3b82f6, #10b981);
+  transition: width 1.5s cubic-bezier(0.16,1,0.3,1);
+}
+.ml-range-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.72rem; color: var(--text3);
+}
+.ml-confidence-text { font-weight: 600; color: #8b5cf6; }
+
+.ml-model-info {
+  display: flex; justify-content: center; gap: 1.5rem;
+  padding-top: 0.75rem; border-top: 1px solid var(--border);
+  font-size: 0.72rem; color: var(--text3);
+}
+
+/* ── ML Status Cards (Dashboard) ────────────────────────────── */
+.ml-status-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+}
+@media (max-width: 700px) { .ml-status-grid { grid-template-columns: 1fr; } }
+
+.ml-status-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 1.25rem;
+  text-align: center; transition: all 0.3s;
+}
+.ml-status-card.active { border-color: rgba(16,185,129,0.3); }
+.ml-status-card.active .ml-status-state { color: var(--green); }
+
+.ml-status-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.ml-status-name { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.25rem; }
+.ml-status-state { font-size: 0.78rem; color: var(--text3); }
+
+/* ── Catalog ML Trend Badge ─────────────────────────────────── */
+.prod-ml-badge {
+  position: absolute; bottom: 10px; left: 10px; z-index: 2;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+  color: white; padding: 0.15rem 0.55rem; border-radius: 8px;
+  font-size: 0.65rem; font-weight: 700;
+  display: flex; align-items: center; gap: 0.25rem;
+}
+
+/* ── ML Section for Homepage ────────────────────────────────── */
+.ml-home-section {
+  padding: 3rem 0;
+}
+.ml-home-section .ml-section-header {
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.ml-home-section .ml-section-title {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ml-home-section .ml-section-title h3 {
+  font-size: 1.6rem;
+}
+.ml-home-section .ml-section-sub {
+  font-size: 0.92rem; color: var(--text2); margin-top: 0.35rem;
+}

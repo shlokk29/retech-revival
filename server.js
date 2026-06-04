@@ -48,6 +48,17 @@ app.use('/api/auth',     require('./routes/auth'));
 app.use('/api/sell',     require('./routes/sell'));
 app.use('/api/cart',     require('./routes/cart'));
 app.use('/api/reviews',  require('./routes/reviews'));
+const mlRoutes = require('./routes/ml');
+app.use('/api/ml',       mlRoutes);
+
+// ─── Initialize ML Models ─────────────────────────────────────
+setTimeout(async () => {
+  try {
+    await mlRoutes.initML();
+  } catch (e) {
+    console.warn('⚠️  ML init deferred:', e.message);
+  }
+}, 3000); // Give MongoDB time to connect first
 
 // ─── Dashboard Stats ──────────────────────────────────────────
 app.get('/api/stats', async (req, res) => {

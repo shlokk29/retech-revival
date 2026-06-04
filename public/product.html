@@ -6,6 +6,7 @@
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark';</script>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/animations3d.css" />
+  <link rel="stylesheet" href="css/ml-widgets.css" />
   <style>
     .lucide { width: 1em; height: 1em; vertical-align: middle; }
     .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; padding: 3rem 0; }
@@ -164,12 +165,15 @@
           </div>
         </div>
       </div>
+      <!-- ML Recommendations -->
+      <div id="ml-recommendations"></div>
     </div>
   </div>
 
   <footer><div class="container"><div class="footer-bottom"><span>© 2026 Retech Revival.</span></div></div></footer>
   <div id="toast-container"></div>
   <script src="js/main.js"></script>
+  <script src="js/ml-widgets.js"></script>
   <script src="js/animations3d.js"></script>
   <script>
     const params = new URLSearchParams(location.search);
@@ -255,8 +259,13 @@
               <span style="font-size:1.5rem"><i data-lucide="shield-check"></i></span>
               <div><strong>${p.warranty} Warranty</strong><br><span style="font-size:0.82rem;color:var(--text2)">Quality tested and guaranteed</span></div>
             </div>
+            <!-- ML AI Insights -->
+            <div id="ml-product-insights"></div>
           </div>
         `;
+        // Track view & load ML insights
+        MLTracker.track(id, 'view');
+        loadProductInsights(id, 'ml-product-insights');
       } catch { container.innerHTML = '<p class="text-muted" style="grid-column:1/-1">Failed to load product.</p>'; }
     }
     loadProduct();
@@ -454,6 +463,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       initStarSelector();
       loadReviews();
+      // Load ML recommendations
+      if (id) loadRecommendations(id, 'ml-recommendations');
       const titleInput = document.getElementById('review-title');
       const bodyInput = document.getElementById('review-body');
       if (titleInput) titleInput.addEventListener('input', () => { document.getElementById('title-chars').textContent = titleInput.value.length; });
